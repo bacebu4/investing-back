@@ -18,6 +18,14 @@ export class RoutesImpl implements Routes {
         method: 'GET',
         path: '/users/:id',
         handler: this.userController.getUser.bind(this.userController),
+        schema: {
+          params: {
+            type: 'object',
+            properties: {
+              id: { type: 'number' },
+            },
+          },
+        },
       },
     ];
   }

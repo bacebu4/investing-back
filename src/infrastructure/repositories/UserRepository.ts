@@ -8,6 +8,16 @@ export interface UserRepository {
 @injectable()
 export class UserRepositoryImpl implements UserRepository {
   get(id: string) {
-    return new UserImpl({ id, email: 'test@test.com', currency: Currency.Rub });
+    const user = new UserImpl({
+      id,
+      email: 'test@test.com',
+      currency: Currency.Rub,
+    });
+
+    if (id === '0') {
+      throw new Error();
+    }
+
+    return user;
   }
 }

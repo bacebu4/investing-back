@@ -4,20 +4,16 @@ import { UserRepository } from '../infrastructure/repositories/UserRepository';
 import { TYPES } from '../infrastructure/container/types';
 
 export interface GetUser {
-  get(id: string): UserImpl;
+  invoke(id: string): UserImpl;
 }
 
 @injectable()
 export class GetUserImpl implements GetUser {
-  userRepository;
-
   public constructor(
-    @inject(TYPES.UserRepository) userRepository: UserRepository
-  ) {
-    this.userRepository = userRepository;
-  }
+    @inject(TYPES.UserRepository) private userRepository: UserRepository
+  ) {}
 
-  public get(id: string) {
+  public invoke(id: string) {
     return this.userRepository.get(id);
   }
 }
