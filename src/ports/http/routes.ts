@@ -1,9 +1,14 @@
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../../infrastructure/container/types';
+import { Request, Response } from './interfaces';
 import { UserController } from './UserController';
 
 export interface Routes {
-  list: Array<{ method: string; path: string; handler: any }>;
+  list: Array<{
+    method: string;
+    path: string;
+    handler: (req: Request, res: Response) => void;
+  }>;
 }
 
 @injectable()

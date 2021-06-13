@@ -1,4 +1,4 @@
-import fastify, { FastifyInstance } from 'fastify';
+import fastify, { FastifyInstance, RouteOptions } from 'fastify';
 import { inject, injectable } from 'inversify';
 import { Routes } from '../../ports/http/routes';
 import { TYPES } from '../container/types';
@@ -14,18 +14,10 @@ export class ServerImpl implements Server {
 
   constructor(@inject(TYPES.Routes) routes: Routes) {
     this.server = fastify({ logger: true });
-    routes.list.forEach((route) => {
-      // @ts-ignore
-      this.server.route(route);
-    });
+    routes.list.forEach((route) => this.server.route(route as any));
   }
 
   start() {
-    this.server.listen(3000, (err, address) => {
-      // if (err) {
-      //   server.log.error(err);
-      //   process.exit(1);
-      // }
-    });
+    this.server.listen(3000);
   }
 }
