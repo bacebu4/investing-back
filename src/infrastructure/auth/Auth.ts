@@ -1,18 +1,19 @@
 import { injectable } from 'inversify';
 
 export interface Auth {
-  sign(userId: string): string;
+  signWithUserId(userId: string): string;
+  verifyAndGetUserId(userId: string): string;
 }
 
 @injectable()
 export class AuthImpl implements Auth {
   private secret: string = '123';
 
-  public sign(userId: string) {
+  public signWithUserId(userId: string) {
     return `signed-key-${userId}-${this.secret}`;
   }
 
-  public verify(token: string) {
+  public verifyAndGetUserId(token: string) {
     return `${token.split('-')[2]}`;
   }
 }
