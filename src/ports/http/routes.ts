@@ -27,7 +27,7 @@ export class RoutesImpl implements Routes {
           params: {
             type: 'object',
             properties: {
-              id: { type: 'number' },
+              id: { type: 'string' },
             },
           },
         },

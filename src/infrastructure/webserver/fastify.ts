@@ -2,6 +2,7 @@ import fastify, { FastifyInstance } from 'fastify';
 import { inject, injectable } from 'inversify';
 import { Routes } from '../../ports/http/routes';
 import { TYPES } from '../container/types';
+import { handleRequest } from './handleRequest';
 
 export interface Server {
   server: FastifyInstance;
@@ -14,7 +15,10 @@ export class ServerImpl implements Server {
 
   constructor(@inject(TYPES.Routes) routes: Routes) {
     this.server = fastify({ logger: true });
-    routes.list.forEach((route) => this.server.route(route as any));
+    routes.list.forEach((route) => {
+      route.handler = handleRequest(route.handler);
+      this.server.route(route as any);
+    });
   }
 
   start() {

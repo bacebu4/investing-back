@@ -1,14 +1,15 @@
 import { inject, injectable } from 'inversify';
+import { UserImpl } from '../../domain/User';
 import { TYPES } from '../../infrastructure/container/types';
+import { RequestPayload } from '../../infrastructure/webserver/handleRequest';
 import { CreateUser } from '../../usecases/CreateUser';
 import { GetUser } from '../../usecases/GetUser';
 import { LoginUser } from '../../usecases/LoginUser';
-import { Request, Response } from './interfaces';
 
 export interface UserController {
-  getUser(req: Request, res: Response): void;
-  createUser(req: Request, res: Response): void;
-  loginUser(req: Request, res: Response): void;
+  getUser(requestPayload: RequestPayload): UserImpl;
+  createUser(requestPayload: RequestPayload): string;
+  loginUser(requestPayload: RequestPayload): string;
 }
 
 @injectable()
@@ -19,24 +20,18 @@ export class UserControllerImpl implements UserController {
     @inject(TYPES.LoginUser) private loginUserUsecase: LoginUser
   ) {}
 
-  getUser(req: Request, res: Response) {
-    const user = this.getUserUsecase.invoke(req.params.id);
-    res.code(200).send(user);
+  getUser({ params }: RequestPayload) {
+    const user = this.getUserUsecase.invoke(params.id);
+    return user;
   }
 
-  createUser(req: Request, res: Response) {
-    const token = this.createUserUsecase.invoke(
-      req.body.email,
-      req.body.password
-    );
-    res.code(200).send(token);
+  createUser({ body }: RequestPayload) {
+    const token = this.createUserUsecase.invoke(body.email, body.password);
+    return token;
   }
 
-  loginUser(req: Request, res: Response) {
-    const token = this.loginUserUsecase.invoke(
-      req.body.email,
-      req.body.password
-    );
-    res.code(200).send(token);
+  loginUser({ body }: RequestPayload) {
+    const token = this.loginUserUsecase.invoke(body.email, body.password);
+    return token;
   }
 }
