@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { UserImpl } from '../../domain/User';
 import { TYPES } from '../../infrastructure/container/types';
-import { RequestPayload } from '../../infrastructure/webserver/handleRequest';
+import { RequestPayload } from './handleRequest';
 import { CreateUser } from '../../usecases/CreateUser';
 import { GetUser } from '../../usecases/GetUser';
 import { LoginUser } from '../../usecases/LoginUser';

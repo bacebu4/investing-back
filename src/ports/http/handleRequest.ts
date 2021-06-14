@@ -1,4 +1,4 @@
-import { Request, Response } from '../../ports/http/interfaces';
+import { Request, Response } from './interfaces';
 
 export interface RequestPayload {
   body: any;
@@ -20,6 +20,7 @@ export function handleRequest(cb: Function) {
 
       res.code(200).send(result || {});
     } catch (err) {
+      // TODO handle auth error here
       res.code(500).send('An unexpected error occurred');
     }
   };

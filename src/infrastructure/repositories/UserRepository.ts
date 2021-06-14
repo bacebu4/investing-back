@@ -14,10 +14,6 @@ export class UserRepositoryImpl implements UserRepository {
       currency: Currency.Rub,
     });
 
-    if (id === '0') {
-      throw new Error();
-    }
-
     return user;
   }
 }
