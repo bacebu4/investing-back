@@ -14,9 +14,11 @@ import { Routes, RoutesImpl } from '../../ports/http/routes';
 import { Server, ServerImpl } from '../webserver/fastify';
 import { LoginUser, LoginUserImpl } from '../../usecases/LoginUser';
 import { CreateUser, CreateUserImpl } from '../../usecases/CreateUser';
+import { Auth, AuthImpl } from '../auth/Auth';
 
 const container = new Container();
 container.bind<UserRepository>(TYPES.UserRepository).to(UserRepositoryImpl);
+container.bind<Auth>(TYPES.Auth).to(AuthImpl);
 container.bind<GetUser>(TYPES.GetUser).to(GetUserImpl);
 container.bind<CreateUser>(TYPES.CreateUser).to(CreateUserImpl);
 container.bind<LoginUser>(TYPES.LoginUser).to(LoginUserImpl);
