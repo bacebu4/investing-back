@@ -1,4 +1,4 @@
-import fastify, { FastifyInstance, RouteOptions } from 'fastify';
+import fastify, { FastifyInstance } from 'fastify';
 import { inject, injectable } from 'inversify';
 import { Routes } from '../../ports/http/routes';
 import { TYPES } from '../container/types';
