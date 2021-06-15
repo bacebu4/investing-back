@@ -8,4 +8,6 @@ export const TYPES = {
   Server: Symbol.for('Server'),
   Auth: Symbol.for('Auth'),
   Logger: Symbol.for('Logger'),
+  RequestLogger: Symbol.for('RequestLogger'),
+  RequestHandler: Symbol.for('RequestHandler'),
 };

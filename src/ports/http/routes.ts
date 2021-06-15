@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../../infrastructure/container/types';
-import { handleRequest } from './handleRequest';
+import { handleRequest, RequestHandler } from './handleRequest';
 import { Request, Response } from './interfaces';
 import { UserController } from './UserController';
 
@@ -15,7 +15,8 @@ export interface Routes {
 @injectable()
 export class RoutesImpl implements Routes {
   public constructor(
-    @inject(TYPES.UserController) private userController: UserController
+    @inject(TYPES.UserController) private userController: UserController,
+    @inject(TYPES.RequestHandler) private requestHandler: RequestHandler
   ) {}
 
   get listWithoutRequestHandler() {
@@ -58,7 +59,7 @@ export class RoutesImpl implements Routes {
   get list() {
     return this.listWithoutRequestHandler.map((route) => ({
       ...route,
-      handler: handleRequest(route.handler),
+      handler: this.requestHandler.handle(route.handler),
     }));
   }
 }

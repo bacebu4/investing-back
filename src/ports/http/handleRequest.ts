@@ -1,4 +1,8 @@
+import { inject, injectable } from 'inversify';
+import { Logger } from 'pino';
 import { ErrorCode } from '../../domain/Error';
+import { TYPES } from '../../infrastructure/container/types';
+import { RequestLogger } from '../../infrastructure/logger/RequestLogger';
 import { Request, Response } from './interfaces';
 
 export function handleRequest(cb: Function) {
@@ -45,5 +49,24 @@ function handleError(err: any, res: Response) {
     default:
       res.code(500).send('An unexpected error occurred');
       break;
+  }
+}
+
+@injectable()
+export class RequestHandler {
+  constructor(@inject(TYPES.RequestLogger) private logger: RequestLogger) {}
+
+  public handle(cb: Function) {
+    return async (req: Request, res: Response) => {
+      this.logger.decorate(req, async () => {
+        const payload = formPayload(req);
+        try {
+          const result = await cb(payload);
+          res.code(200).send(result || {});
+        } catch (err) {
+          handleError(err, res);
+        }
+      });
+    };
   }
 }

@@ -9,7 +9,7 @@ export interface UserRepository {
 
 @injectable()
 export class UserRepositoryImpl implements UserRepository {
-  constructor(@inject(TYPES.Logger) private logger: Logger) {}
+  constructor(@inject(TYPES.RequestLogger) private logger: Logger) {}
   get(id: string) {
     this.logger.info('continue');
     const user = new UserImpl({

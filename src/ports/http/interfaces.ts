@@ -1,6 +1,7 @@
 export interface Request {
   body: any;
   params: any;
+  headers: any;
 }
 
 export interface Response {

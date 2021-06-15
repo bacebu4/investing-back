@@ -16,6 +16,8 @@ import { LoginUser, LoginUserImpl } from '../../usecases/LoginUser';
 import { CreateUser, CreateUserImpl } from '../../usecases/CreateUser';
 import { Auth, AuthImpl } from '../auth/Auth';
 import { Logger, LoggerImpl } from '../logger/Logger';
+import { RequestLogger, RequestLoggerImpl } from '../logger/RequestLogger';
+import { RequestHandler } from '../../ports/http/handleRequest';
 
 const container = new Container();
 container
@@ -34,6 +36,14 @@ container
   .to(UserControllerImpl)
   .inSingletonScope();
 container.bind<Logger>(TYPES.Logger).to(LoggerImpl).inSingletonScope();
+container
+  .bind<RequestLogger>(TYPES.RequestLogger)
+  .to(RequestLoggerImpl)
+  .inRequestScope();
+container
+  .bind<RequestHandler>(TYPES.RequestHandler)
+  .to(RequestHandler)
+  .inRequestScope();
 container.bind<Routes>(TYPES.Routes).to(RoutesImpl).inSingletonScope();
 container.bind<Server>(TYPES.Server).to(ServerImpl).inSingletonScope();
 
