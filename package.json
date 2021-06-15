@@ -21,8 +21,11 @@
     "ts-node": "^10.0.0"
   },
   "dependencies": {
+    "@types/pino": "^6.3.8",
     "fastify": "^3.17.0",
     "inversify": "^5.1.1",
+    "pino": "^6.11.3",
+    "pino-pretty": "^5.0.2",
     "reflect-metadata": "^0.1.13",
     "typescript": "^4.3.2"
   }

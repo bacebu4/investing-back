@@ -7,4 +7,5 @@ export const TYPES = {
   Routes: Symbol.for('Routes'),
   Server: Symbol.for('Server'),
   Auth: Symbol.for('Auth'),
+  Logger: Symbol.for('Logger'),
 };

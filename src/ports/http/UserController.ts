@@ -5,6 +5,7 @@ import { RequestPayload } from './handleRequest';
 import { CreateUser } from '../../usecases/CreateUser';
 import { GetUser } from '../../usecases/GetUser';
 import { LoginUser } from '../../usecases/LoginUser';
+import { Logger } from '../../infrastructure/logger/Logger';
 
 export interface UserController {
   getUser(requestPayload: RequestPayload): UserImpl;
@@ -17,10 +18,12 @@ export class UserControllerImpl implements UserController {
   constructor(
     @inject(TYPES.GetUser) private getUserUsecase: GetUser,
     @inject(TYPES.CreateUser) private createUserUsecase: CreateUser,
-    @inject(TYPES.LoginUser) private loginUserUsecase: LoginUser
+    @inject(TYPES.LoginUser) private loginUserUsecase: LoginUser,
+    @inject(TYPES.Logger) private logger: Logger
   ) {}
 
   getUser({ params }: RequestPayload) {
+    this.logger.info('started');
     const user = this.getUserUsecase.invoke(params.id);
     return user;
   }
