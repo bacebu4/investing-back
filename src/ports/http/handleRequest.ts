@@ -38,6 +38,10 @@ function handleError(err: any, res: Response) {
       res.code(401).send(err?.message);
       break;
 
+    case ErrorCode.CORRUPTED:
+      res.code(422).send(err?.message);
+      break;
+
     default:
       res.code(500).send('An unexpected error occurred');
       break;

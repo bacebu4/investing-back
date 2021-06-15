@@ -1,3 +1,4 @@
+import { ErrorCode, ErrorImpl } from './Error';
 import { Ticker } from './Ticker';
 
 export interface Portfolio {
@@ -34,7 +35,7 @@ export class PortfolioImpl implements Portfolio {
     );
 
     if (tickerIndex === -1) {
-      throw new Error('Ticker was not found');
+      throw new ErrorImpl(ErrorCode.CORRUPTED);
     }
 
     return this.tickers[tickerIndex];
