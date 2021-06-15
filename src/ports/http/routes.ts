@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../../infrastructure/container/types';
-import { handleRequest, RequestHandler } from './handleRequest';
+import { RequestHandler } from './handleRequest';
 import { Request, Response } from './interfaces';
 import { UserController } from './UserController';
 
