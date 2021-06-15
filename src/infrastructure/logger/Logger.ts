@@ -11,7 +11,7 @@ export class LoggerImpl implements Logger {
   private logger;
 
   constructor() {
-    this.logger = pino({ prettyPrint: true });
+    this.logger = pino();
     this.logger.child;
   }
 
