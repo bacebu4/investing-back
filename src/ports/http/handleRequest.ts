@@ -25,7 +25,7 @@ function formPayload(req: Request): RequestPayload {
 }
 
 function handleError(err: any, res: Response) {
-  switch (err?.errorCode) {
+  switch (err?.message) {
     case ErrorCode.UNAUTHENTICATED:
       res.code(401).send(err?.message);
       break;
