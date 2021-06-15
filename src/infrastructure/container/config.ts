@@ -10,14 +10,14 @@ import {
   UserController,
   UserControllerImpl,
 } from '../../ports/http/UserController';
-import { Routes, RoutesImpl } from '../../ports/http/routes';
+import { Routes, RoutesImpl } from '../../ports/http/Routes';
 import { Server, ServerImpl } from '../webserver/fastify';
 import { LoginUser, LoginUserImpl } from '../../usecases/LoginUser';
 import { CreateUser, CreateUserImpl } from '../../usecases/CreateUser';
 import { Auth, AuthImpl } from '../auth/Auth';
 import { Logger, LoggerImpl } from '../logger/Logger';
 import { RequestLogger, RequestLoggerImpl } from '../logger/RequestLogger';
-import { RequestHandler } from '../../ports/http/handleRequest';
+import { RequestHandler } from '../../ports/http/RequestHandler';
 
 const container = new Container();
 container

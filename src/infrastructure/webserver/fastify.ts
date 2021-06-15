@@ -1,6 +1,6 @@
 import fastify, { FastifyInstance } from 'fastify';
 import { inject, injectable } from 'inversify';
-import { Routes } from '../../ports/http/routes';
+import { Routes } from '../../ports/http/Routes';
 import { TYPES } from '../container/types';
 
 export interface Server {
