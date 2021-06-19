@@ -18,6 +18,7 @@ import { Auth, AuthImpl } from '../auth/Auth';
 import { Logger, LoggerImpl } from '../logger/Logger';
 import { RequestLogger, RequestLoggerImpl } from '../logger/RequestLogger';
 import { RequestHandler } from '../../ports/http/RequestHandler';
+import { UUID, UUIDImpl } from '../uuid/UUID';
 
 const container = new Container();
 container
@@ -25,6 +26,7 @@ container
   .to(UserRepositoryImpl)
   .inSingletonScope();
 container.bind<Auth>(TYPES.Auth).to(AuthImpl).inSingletonScope();
+container.bind<UUID>(TYPES.UUID).to(UUIDImpl).inSingletonScope();
 container.bind<GetUser>(TYPES.GetUser).to(GetUserImpl).inSingletonScope();
 container
   .bind<CreateUser>(TYPES.CreateUser)

@@ -10,4 +10,5 @@ export const TYPES = {
   Logger: Symbol.for('Logger'),
   RequestLogger: Symbol.for('RequestLogger'),
   RequestHandler: Symbol.for('RequestHandler'),
+  UUID: Symbol.for('UUID'),
 };
