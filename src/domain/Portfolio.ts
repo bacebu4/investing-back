@@ -1,25 +1,8 @@
 import { ErrorCode, ErrorImpl } from './Error';
 import { Ticker } from './Ticker';
 
-export interface Portfolio {
-  tickers: Ticker[];
-  totalPrice: number;
-  percentageOfTickerById(id: string): number;
-  relativePercentageOfTickerById(id: string): number;
-  addOneTickerById(id: string): void;
-  removeTickerAmountById(id: string): void;
-  findTickerById(id: string): Ticker;
-  tickersWithAnalytics: Array<
-    Ticker & {
-      totalPriceAimingTo: number;
-      relativePercentage: number;
-      percentage: number;
-    }
-  >;
-}
-
-export class PortfolioImpl implements Portfolio {
-  public tickers;
+export class Portfolio implements Portfolio {
+  public tickers: Ticker[];
 
   constructor(tickers: Ticker[]) {
     this.tickers = tickers;

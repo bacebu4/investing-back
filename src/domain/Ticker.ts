@@ -1,17 +1,9 @@
-export interface Ticker {
+export class Ticker {
   price: number;
   amount: number;
   name: string;
   id: string;
   percentageAimingTo: number;
-  totalPrice: number;
-}
-export class TickerImpl implements Ticker {
-  price;
-  amount;
-  name;
-  id;
-  percentageAimingTo;
 
   constructor({
     price,
