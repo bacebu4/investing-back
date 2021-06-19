@@ -3,6 +3,7 @@ import { PortfolioOptimizer } from './src/domain/PortfolioOptimizer';
 import { TickerImpl } from './src/domain/Ticker';
 import { container } from './src/infrastructure/container/config';
 import { TYPES } from './src/infrastructure/container/types';
+import { DatabaseImpl } from './src/infrastructure/db';
 import { ServerImpl } from './src/infrastructure/webserver/fastify';
 
 const ticker1 = new TickerImpl({
@@ -35,7 +36,9 @@ portfolioShouldBe.optimize();
 console.log(portfolio.totalPrice);
 console.log(portfolioShouldBe.portfolio.totalPrice);
 const server = container.get<ServerImpl>(TYPES.Server);
+const db = container.get<DatabaseImpl>(TYPES.Database);
 server.start();
+db.initialize();
 
 // const getUser = container.get<GetUser>(TYPES.GetUser);
 // console.log(getUser.get('123').id);

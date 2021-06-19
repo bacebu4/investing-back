@@ -19,8 +19,10 @@ import { Logger, LoggerImpl } from '../logger/Logger';
 import { RequestLogger, RequestLoggerImpl } from '../logger/RequestLogger';
 import { RequestHandler } from '../../ports/http/RequestHandler';
 import { UUID, UUIDImpl } from '../uuid/UUID';
+import { Database, DatabaseImpl } from '../db';
 
 const container = new Container();
+container.bind<Database>(TYPES.Database).to(DatabaseImpl).inSingletonScope();
 container
   .bind<UserRepository>(TYPES.UserRepository)
   .to(UserRepositoryImpl)

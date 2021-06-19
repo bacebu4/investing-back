@@ -1,0 +1,11 @@
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "bacebu4",
+  "password": "",
+  "database": "investing-back",
+  "synchronize": true,
+  "logging": true,
+  "entities": ["entities/*.ts"]
+}
