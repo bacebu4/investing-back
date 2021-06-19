@@ -11,6 +11,14 @@ export interface Database {
 export class DatabaseImpl implements Database {
   private connection;
 
+  get establishedConnection() {
+    if (this.connection) {
+      return this.connection;
+    } else {
+      throw new Error('Not established connection');
+    }
+  }
+
   public async initialize() {
     this.connection = await createConnection({
       type: 'postgres',
