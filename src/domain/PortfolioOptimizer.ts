@@ -35,7 +35,7 @@ export class PortfolioOptimizer {
       let nextRelativeAbsPercentage: number;
 
       do {
-        this.portfolio.addTickerAmountById(ticker.id);
+        this.portfolio.addOneTickerById(ticker.id);
         nextRelativeAbsPercentage = Math.abs(
           this.portfolio.relativePercentageOfTickerById(ticker.id)
         );

@@ -6,7 +6,7 @@ export interface Portfolio {
   totalPrice: number;
   percentageOfTickerById(id: string): number;
   relativePercentageOfTickerById(id: string): number;
-  addTickerAmountById(id: string): void;
+  addOneTickerById(id: string): void;
   removeTickerAmountById(id: string): void;
   findTickerById(id: string): Ticker;
   tickersWithAnalytics: Array<
@@ -56,7 +56,7 @@ export class PortfolioImpl implements Portfolio {
     );
   }
 
-  addTickerAmountById(id: string) {
+  addOneTickerById(id: string) {
     const ticker = this.findTickerById(id);
     ticker.amount += 1;
   }
