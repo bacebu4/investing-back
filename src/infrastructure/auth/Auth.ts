@@ -1,4 +1,5 @@
 import { injectable } from 'inversify';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 export interface Auth {
   signWithUserId(userId: string): string;
@@ -10,10 +11,11 @@ export class AuthImpl implements Auth {
   private secret: string = '123';
 
   public signWithUserId(userId: string) {
-    return `signed-key-${userId}-${this.secret}`;
+    return jwt.sign({ userId }, this.secret);
   }
 
   public verifyAndGetUserId(token: string) {
-    return `${token.split('-')[2]}`;
+    const payload: JwtPayload | string = jwt.verify(token, this.secret);
+    return (payload as JwtPayload).userId;
   }
 }
