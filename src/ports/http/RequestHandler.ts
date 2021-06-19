@@ -15,7 +15,7 @@ export class RequestHandler implements RequestHandler {
   public handle(cb: Function) {
     return async (req: Request, res: Response) => {
       this.logger.decorateWithTraceId(req, async () => {
-        this.executeCb(req, res, cb);
+        await this.executeCb(req, res, cb);
       });
     };
   }
