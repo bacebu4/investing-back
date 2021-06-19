@@ -1,12 +1,12 @@
 import { inject, injectable } from 'inversify';
-import { UserImpl } from '../domain/User';
+import { User } from '../domain/User';
 import { UserRepository } from '../infrastructure/repositories/UserRepository';
 import { TYPES } from '../infrastructure/container/types';
 import { Usecase } from './interface';
 import { Auth } from '../infrastructure/auth/Auth';
 
 export interface GetUser extends Usecase {
-  invoke(id: string): UserImpl;
+  invoke(id: string): User;
 }
 
 @injectable()

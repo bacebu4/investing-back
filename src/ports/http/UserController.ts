@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { UserImpl } from '../../domain/User';
+import { User } from '../../domain/User';
 import { TYPES } from '../../infrastructure/container/types';
 import { RequestHandler, RequestPayload } from './RequestHandler';
 import { CreateUser } from '../../usecases/CreateUser';
@@ -8,7 +8,7 @@ import { LoginUser } from '../../usecases/LoginUser';
 import { Logger } from '../../infrastructure/logger/Logger';
 
 export interface UserController {
-  getUser(requestPayload: RequestPayload): UserImpl;
+  getUser(requestPayload: RequestPayload): User;
   createUser(requestPayload: RequestPayload): string;
   loginUser(requestPayload: RequestPayload): string;
 }
