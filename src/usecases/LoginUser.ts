@@ -4,7 +4,7 @@ import { TYPES } from '../infrastructure/container/types';
 import { Usecase } from './interface';
 import { Crypto } from '../infrastructure/crypto/Crypto';
 import { Auth } from '../infrastructure/auth/Auth';
-import { ErrorCode, ErrorImpl } from '../domain/Error';
+import { ErrorCode, BaseError } from '../domain/Error';
 
 type Payload = {
   email: string;
@@ -38,7 +38,7 @@ export class LoginUserImpl implements LoginUser {
     );
 
     if (this.passwordNotMatched(res)) {
-      throw new ErrorImpl(ErrorCode.WRONG_PASSWORD_OR_EMAIL);
+      throw new BaseError(ErrorCode.WRONG_PASSWORD_OR_EMAIL);
     }
   }
 

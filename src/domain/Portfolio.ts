@@ -1,4 +1,4 @@
-import { ErrorCode, ErrorImpl } from './Error';
+import { ErrorCode, BaseError } from './Error';
 import { Ticker } from './Ticker';
 
 export class Portfolio implements Portfolio {
@@ -18,7 +18,7 @@ export class Portfolio implements Portfolio {
     );
 
     if (tickerIndex === -1) {
-      throw new ErrorImpl(ErrorCode.CORRUPTED);
+      throw new BaseError(ErrorCode.CORRUPTED);
     }
 
     return this.tickers[tickerIndex];

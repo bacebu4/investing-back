@@ -1,5 +1,6 @@
 import { injectable } from 'inversify';
 import { Connection, createConnection } from 'typeorm';
+import { BaseError, ErrorCode } from '../../domain/Error';
 import { TickerEntity } from './entities/TickerEntity';
 import { UserEntity } from './entities/UserEntity';
 
@@ -15,7 +16,7 @@ export class DatabaseImpl implements Database {
     if (this.connection) {
       return this.connection;
     } else {
-      throw new Error('Not established connection');
+      throw new BaseError(ErrorCode.NOT_ESTABLISHED_DB_CONNECTION);
     }
   }
 

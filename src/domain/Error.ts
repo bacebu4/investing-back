@@ -6,7 +6,7 @@ export enum ErrorCode {
   NOT_ESTABLISHED_DB_CONNECTION = 'DB connection was not established yet.',
 }
 
-export class ErrorImpl extends Error {
+export class BaseError extends Error {
   message: ErrorCode;
 
   constructor(message: ErrorCode) {
