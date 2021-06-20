@@ -1,6 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { Currency, User } from '../../domain/User';
 import { TYPES } from '../container/types';
+import { Database } from '../db';
 import { Logger } from '../logger/Logger';
 
 export interface UserRepository {
@@ -11,7 +12,10 @@ export interface UserRepository {
 
 @injectable()
 export class UserRepositoryImpl implements UserRepository {
-  constructor(@inject(TYPES.RequestLogger) private logger: Logger) {}
+  constructor(
+    @inject(TYPES.RequestLogger) private logger: Logger,
+    @inject(TYPES.Database) private db: Database
+  ) {}
 
   get(id: string) {
     this.logger.info('continue');
@@ -31,5 +35,7 @@ export class UserRepositoryImpl implements UserRepository {
     });
   }
 
-  save(user: User) {}
+  public async save(user: User) {
+    await this.db.saveUser(user);
+  }
 }

@@ -3,6 +3,7 @@ import { TYPES } from '../../infrastructure/container/types';
 import { RequestHandler } from './RequestHandler';
 import { Request, Response } from './interfaces';
 import { UserController } from './UserController';
+import { Currency } from '../../domain/User';
 
 export interface Routes {
   list: Array<{
@@ -44,6 +45,7 @@ export class RoutesImpl implements Routes {
             properties: {
               email: { type: 'string' },
               password: { type: 'string' },
+              currency: { type: 'string', enum: Object.values(Currency) },
             },
           },
           response: {

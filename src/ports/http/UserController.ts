@@ -23,16 +23,16 @@ export class UserControllerImpl implements UserController {
   ) {}
 
   getUser({ params }: RequestPayload) {
-    this.logger.info('started');
     const user = this.getUserUsecase.invoke(params.id);
     return user;
   }
 
-  createUser({ body }: RequestPayload) {
-    const token = this.createUserUsecase.invoke({
+  public async createUser({ body }: RequestPayload) {
+    this.logger.info('creating a user');
+    const token = await this.createUserUsecase.invoke({
       email: body.email,
       password: body.password,
-      currency: 'RUB' as any,
+      currency: body.currency,
     });
     return token;
   }

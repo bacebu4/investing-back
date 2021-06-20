@@ -18,7 +18,7 @@ export class CreateUserImpl implements CreateUser {
     @inject(TYPES.UserRepository) private userRepository: UserRepository,
     @inject(TYPES.UUID) private uuid: UUID,
     @inject(TYPES.Crypto) private crypto: Crypto,
-    @inject(TYPES.TokenService) private auth: TokenService
+    @inject(TYPES.TokenService) private tokenService: TokenService
   ) {}
 
   public async invoke({ email, password, currency }: Payload) {
@@ -26,9 +26,9 @@ export class CreateUserImpl implements CreateUser {
     const hashedPassword = await this.crypto.generateHash(password);
 
     const user = new User({ id: userId, email, currency, hashedPassword });
-    this.userRepository.save(user);
+    await this.userRepository.save(user);
 
-    const token = this.auth.signWithUserId(userId);
+    const token = this.tokenService.signWithUserId(userId);
     return token;
   }
 }
