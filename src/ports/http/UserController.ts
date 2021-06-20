@@ -19,7 +19,7 @@ export class UserControllerImpl implements UserController {
     @inject(TYPES.GetUser) private getUserUsecase: GetUser,
     @inject(TYPES.CreateUser) private createUserUsecase: CreateUser,
     @inject(TYPES.LoginUser) private loginUserUsecase: LoginUser,
-    @inject(TYPES.RequestLogger) private logger: Logger
+    @inject(TYPES.Logger) private logger: Logger
   ) {}
 
   getUser({ params }: RequestPayload) {

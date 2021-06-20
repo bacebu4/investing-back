@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { ErrorCode } from '../../domain/Error';
 import { TYPES } from '../../infrastructure/container/types';
-import { RequestLogger } from '../../infrastructure/logger/RequestLogger';
+import { Logger } from '../../infrastructure/logger/Logger';
 import { Request, Response } from './interfaces';
 
 export interface RequestPayload {
@@ -10,11 +10,11 @@ export interface RequestPayload {
 }
 @injectable()
 export class RequestHandler implements RequestHandler {
-  constructor(@inject(TYPES.RequestLogger) private logger: RequestLogger) {}
+  constructor(@inject(TYPES.Logger) private logger: Logger) {}
 
   public handle(cb: Function) {
     return async (req: Request, res: Response) => {
-      this.logger.decorateWithTraceId(req, async () => {
+      this.logger.decorateRequestWithTraceId(req, async () => {
         await this.executeCb(req, res, cb);
       });
     };
@@ -38,6 +38,8 @@ export class RequestHandler implements RequestHandler {
   }
 
   private handleError(err: any, res: Response) {
+    this.logger.info(err);
+
     switch (err?.message) {
       case ErrorCode.UNAUTHENTICATED:
         res.code(401).send(err?.message);

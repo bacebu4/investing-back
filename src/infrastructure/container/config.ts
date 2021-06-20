@@ -16,7 +16,6 @@ import { LoginUser, LoginUserImpl } from '../../usecases/LoginUser';
 import { CreateUser, CreateUserImpl } from '../../usecases/CreateUser';
 import { TokenService, TokenServiceImpl } from '../token/TokenService';
 import { Logger, LoggerImpl } from '../logger/Logger';
-import { RequestLogger, RequestLoggerImpl } from '../logger/RequestLogger';
 import { RequestHandler } from '../../ports/http/RequestHandler';
 import { UUID, UUIDImpl } from '../uuid/UUID';
 import { Database, DatabaseImpl } from '../db';
@@ -45,10 +44,6 @@ container
   .to(UserControllerImpl)
   .inSingletonScope();
 container.bind<Logger>(TYPES.Logger).to(LoggerImpl).inSingletonScope();
-container
-  .bind<RequestLogger>(TYPES.RequestLogger)
-  .to(RequestLoggerImpl)
-  .inRequestScope();
 container
   .bind<RequestHandler>(TYPES.RequestHandler)
   .to(RequestHandler)

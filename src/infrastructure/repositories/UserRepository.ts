@@ -13,7 +13,7 @@ export interface UserRepository {
 @injectable()
 export class UserRepositoryImpl implements UserRepository {
   constructor(
-    @inject(TYPES.RequestLogger) private logger: Logger,
+    @inject(TYPES.Logger) private logger: Logger,
     @inject(TYPES.Database) private db: Database
   ) {}
 
