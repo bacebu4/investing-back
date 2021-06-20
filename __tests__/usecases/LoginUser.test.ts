@@ -38,7 +38,7 @@ class AuthFake {
 const fakeContainer = new Container();
 fakeContainer.bind(TYPES.Crypto).to(CryptoFake);
 fakeContainer.bind(TYPES.UserRepository).to(UserRepoFake);
-fakeContainer.bind(TYPES.Auth).to(AuthFake);
+fakeContainer.bind(TYPES.TokenService).to(AuthFake);
 fakeContainer.bind(TYPES.LoginUser).to(LoginUserImpl);
 
 const INPUT = { email: 'FAKE_MAIL', password: '123' };

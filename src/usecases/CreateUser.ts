@@ -5,7 +5,7 @@ import { Usecase } from './interface';
 import { UUID } from '../infrastructure/uuid/UUID';
 import { Currency, User } from '../domain/User';
 import { Crypto } from '../infrastructure/crypto/Crypto';
-import { Auth } from '../infrastructure/auth/Auth';
+import { TokenService } from '../infrastructure/token/TokenService';
 
 type Payload = { email: string; password: string; currency: Currency };
 export interface CreateUser extends Usecase {
@@ -18,7 +18,7 @@ export class CreateUserImpl implements CreateUser {
     @inject(TYPES.UserRepository) private userRepository: UserRepository,
     @inject(TYPES.UUID) private uuid: UUID,
     @inject(TYPES.Crypto) private crypto: Crypto,
-    @inject(TYPES.Auth) private auth: Auth
+    @inject(TYPES.TokenService) private auth: TokenService
   ) {}
 
   public async invoke({ email, password, currency }: Payload) {

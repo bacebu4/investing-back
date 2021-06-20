@@ -1,13 +1,13 @@
 import { injectable } from 'inversify';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
-export interface Auth {
+export interface TokenService {
   signWithUserId(userId: string): string;
   verifyAndGetUserId(userId: string): string;
 }
 
 @injectable()
-export class AuthImpl implements Auth {
+export class TokenServiceImpl implements TokenService {
   private secret: string = '123';
 
   public signWithUserId(userId: string) {

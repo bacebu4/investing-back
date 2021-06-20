@@ -3,7 +3,7 @@ import { User } from '../domain/User';
 import { UserRepository } from '../infrastructure/repositories/UserRepository';
 import { TYPES } from '../infrastructure/container/types';
 import { Usecase } from './interface';
-import { Auth } from '../infrastructure/auth/Auth';
+import { TokenService } from '../infrastructure/token/TokenService';
 
 export interface GetUser extends Usecase {
   invoke(id: string): User;
@@ -13,7 +13,7 @@ export interface GetUser extends Usecase {
 export class GetUserImpl implements GetUser {
   public constructor(
     @inject(TYPES.UserRepository) private userRepository: UserRepository,
-    @inject(TYPES.Auth) private auth: Auth
+    @inject(TYPES.TokenService) private auth: TokenService
   ) {}
 
   public invoke(token: string) {

@@ -6,7 +6,7 @@ export const TYPES = {
   UserController: Symbol.for('UserController'),
   Routes: Symbol.for('Routes'),
   Server: Symbol.for('Server'),
-  Auth: Symbol.for('Auth'),
+  TokenService: Symbol.for('TokenService'),
   Logger: Symbol.for('Logger'),
   RequestLogger: Symbol.for('RequestLogger'),
   RequestHandler: Symbol.for('RequestHandler'),

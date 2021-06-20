@@ -14,7 +14,7 @@ import { Routes, RoutesImpl } from '../../ports/http/Routes';
 import { Server, ServerImpl } from '../webserver/fastify';
 import { LoginUser, LoginUserImpl } from '../../usecases/LoginUser';
 import { CreateUser, CreateUserImpl } from '../../usecases/CreateUser';
-import { Auth, AuthImpl } from '../auth/Auth';
+import { TokenService, TokenServiceImpl } from '../token/TokenService';
 import { Logger, LoggerImpl } from '../logger/Logger';
 import { RequestLogger, RequestLoggerImpl } from '../logger/RequestLogger';
 import { RequestHandler } from '../../ports/http/RequestHandler';
@@ -28,7 +28,10 @@ container
   .bind<UserRepository>(TYPES.UserRepository)
   .to(UserRepositoryImpl)
   .inSingletonScope();
-container.bind<Auth>(TYPES.Auth).to(AuthImpl).inSingletonScope();
+container
+  .bind<TokenService>(TYPES.TokenService)
+  .to(TokenServiceImpl)
+  .inSingletonScope();
 container.bind<UUID>(TYPES.UUID).to(UUIDImpl).inSingletonScope();
 container.bind<Crypto>(TYPES.Crypto).to(CryptoImpl).inSingletonScope();
 container.bind<GetUser>(TYPES.GetUser).to(GetUserImpl).inSingletonScope();

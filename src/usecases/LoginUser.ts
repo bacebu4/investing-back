@@ -3,7 +3,7 @@ import { UserRepository } from '../infrastructure/repositories/UserRepository';
 import { TYPES } from '../infrastructure/container/types';
 import { Usecase } from './interface';
 import { Crypto } from '../infrastructure/crypto/Crypto';
-import { Auth } from '../infrastructure/auth/Auth';
+import { TokenService } from '../infrastructure/token/TokenService';
 import { ErrorCode, BaseError } from '../domain/Error';
 
 type Payload = {
@@ -19,7 +19,7 @@ export class LoginUserImpl implements LoginUser {
   public constructor(
     @inject(TYPES.UserRepository) private userRepository: UserRepository,
     @inject(TYPES.Crypto) private crypto: Crypto,
-    @inject(TYPES.Auth) private auth: Auth
+    @inject(TYPES.TokenService) private auth: TokenService
   ) {}
 
   public async invoke({ email, password }: Payload) {
