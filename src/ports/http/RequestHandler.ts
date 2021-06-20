@@ -55,6 +55,10 @@ export class RequestHandler implements RequestHandler {
         res.code(422).send(err?.message);
         break;
 
+      case ErrorCode.NOT_ESTABLISHED_DB_CONNECTION:
+        res.code(503).send(err?.message);
+        break;
+
       default:
         res.code(500).send('An unexpected error occurred');
         break;
