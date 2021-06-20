@@ -12,4 +12,5 @@ export const TYPES = {
   RequestHandler: Symbol.for('RequestHandler'),
   UUID: Symbol.for('UUID'),
   Database: Symbol.for('Database'),
+  Crypto: Symbol.for('Crypto'),
 };

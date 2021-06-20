@@ -9,7 +9,7 @@ import { Logger } from '../../infrastructure/logger/Logger';
 
 export interface UserController {
   getUser(requestPayload: RequestPayload): User;
-  createUser(requestPayload: RequestPayload): string;
+  createUser(requestPayload: RequestPayload): Promise<string>;
   loginUser(requestPayload: RequestPayload): string;
 }
 
@@ -29,7 +29,11 @@ export class UserControllerImpl implements UserController {
   }
 
   createUser({ body }: RequestPayload) {
-    const token = this.createUserUsecase.invoke(body.email, body.password);
+    const token = this.createUserUsecase.invoke({
+      email: body.email,
+      password: body.password,
+      currency: 'RUB' as any,
+    });
     return token;
   }
 

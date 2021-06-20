@@ -20,6 +20,7 @@ import { RequestLogger, RequestLoggerImpl } from '../logger/RequestLogger';
 import { RequestHandler } from '../../ports/http/RequestHandler';
 import { UUID, UUIDImpl } from '../uuid/UUID';
 import { Database, DatabaseImpl } from '../db';
+import { CryptoImpl, Crypto } from '../crypto/Crypto';
 
 const container = new Container();
 container.bind<Database>(TYPES.Database).to(DatabaseImpl).inSingletonScope();
@@ -29,6 +30,7 @@ container
   .inSingletonScope();
 container.bind<Auth>(TYPES.Auth).to(AuthImpl).inSingletonScope();
 container.bind<UUID>(TYPES.UUID).to(UUIDImpl).inSingletonScope();
+container.bind<Crypto>(TYPES.Crypto).to(CryptoImpl).inSingletonScope();
 container.bind<GetUser>(TYPES.GetUser).to(GetUserImpl).inSingletonScope();
 container
   .bind<CreateUser>(TYPES.CreateUser)

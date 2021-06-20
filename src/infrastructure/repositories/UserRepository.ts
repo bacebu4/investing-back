@@ -5,11 +5,13 @@ import { Logger } from '../logger/Logger';
 
 export interface UserRepository {
   get(id: string): User;
+  save(user: User): void;
 }
 
 @injectable()
 export class UserRepositoryImpl implements UserRepository {
   constructor(@inject(TYPES.RequestLogger) private logger: Logger) {}
+
   get(id: string) {
     this.logger.info('continue');
     const user = new User({
@@ -20,4 +22,6 @@ export class UserRepositoryImpl implements UserRepository {
 
     return user;
   }
+
+  save(user: User) {}
 }

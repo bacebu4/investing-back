@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import { createConnection } from 'typeorm';
+import { Connection, createConnection } from 'typeorm';
 import { TickerEntity } from './entities/TickerEntity';
 import { UserEntity } from './entities/UserEntity';
 
@@ -9,7 +9,7 @@ export interface Database {
 
 @injectable()
 export class DatabaseImpl implements Database {
-  private connection;
+  private connection: Connection;
 
   get establishedConnection() {
     if (this.connection) {
