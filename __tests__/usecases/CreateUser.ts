@@ -5,7 +5,7 @@ import { UUID } from '../../src/infrastructure/uuid/UUID';
 import { CreateUserImpl } from '../../src/usecases/CreateUser';
 import { Currency, User } from '../../src/domain/User';
 
-const FAKE_UUID = 'generated-uuid';
+const FAKE_UUID = 'generated-uuid-test';
 const mockUUIDGenerate = jest.fn();
 @injectable()
 class UUIDFake implements UUID {
