@@ -10,7 +10,7 @@ export class UserEntity {
   email: string;
 
   @Column()
-  password: string;
+  hashedPassword: string;
 
   @OneToMany((type) => TickerEntity, (ticker) => ticker.userId)
   tickers: TickerEntity[];

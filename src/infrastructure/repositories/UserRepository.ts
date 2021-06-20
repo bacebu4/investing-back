@@ -6,6 +6,7 @@ import { Logger } from '../logger/Logger';
 export interface UserRepository {
   get(id: string): User;
   save(user: User): void;
+  getByEmail(email: string): User;
 }
 
 @injectable()
@@ -21,6 +22,13 @@ export class UserRepositoryImpl implements UserRepository {
     });
 
     return user;
+  }
+
+  getByEmail(email: string) {
+    return new User({
+      hashedPassword: 'hashed',
+      id: '1230123-213-sdf-213',
+    });
   }
 
   save(user: User) {}

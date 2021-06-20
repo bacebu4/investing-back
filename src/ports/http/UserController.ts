@@ -10,7 +10,7 @@ import { Logger } from '../../infrastructure/logger/Logger';
 export interface UserController {
   getUser(requestPayload: RequestPayload): User;
   createUser(requestPayload: RequestPayload): Promise<string>;
-  loginUser(requestPayload: RequestPayload): string;
+  loginUser(requestPayload: RequestPayload): Promise<string>;
 }
 
 @injectable()
@@ -38,7 +38,10 @@ export class UserControllerImpl implements UserController {
   }
 
   loginUser({ body }: RequestPayload) {
-    const token = this.loginUserUsecase.invoke(body.email, body.password);
+    const token = this.loginUserUsecase.invoke({
+      email: body.email,
+      password: body.password,
+    });
     return token;
   }
 }
