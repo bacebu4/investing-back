@@ -4,11 +4,12 @@ import pino from 'pino';
 export interface Logger {
   info(message: string): void;
   child(bindings: pino.Bindings): pino.Logger;
+  error(obj: object, msg?: string): void;
 }
 
 @injectable()
 export class LoggerImpl implements Logger {
-  private logger;
+  private logger: pino.Logger;
 
   constructor() {
     this.logger = pino();
@@ -17,6 +18,10 @@ export class LoggerImpl implements Logger {
 
   public info(message: string) {
     this.logger.info(message);
+  }
+
+  public error(obj: object, msg?: string) {
+    this.logger.error(obj, msg);
   }
 
   public child(bindings: pino.Bindings) {
