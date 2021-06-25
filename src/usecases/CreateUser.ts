@@ -17,7 +17,6 @@ export interface CreateUser extends Usecase {
 export class CreateUserImpl implements CreateUser {
   private email: string;
   private password: string;
-  private currency: Currency;
 
   public constructor(
     @inject(TYPES.UserRepository) private userRepository: UserRepository,
@@ -29,7 +28,6 @@ export class CreateUserImpl implements CreateUser {
   public async invoke({ email, password, currency }: Payload) {
     this.email = email;
     this.password = password;
-    this.currency = currency;
 
     await this.checkIfEmailTaken();
     this.validatePassword();
