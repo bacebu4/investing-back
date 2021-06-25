@@ -23,8 +23,10 @@ export class LoginUserImpl implements LoginUser {
   ) {}
 
   public async invoke({ email, password }: Payload) {
-    const { hashedPassword, id: userId } =
-      this.userRepository.getByEmail(email);
+    // const { hashedPassword, id: userId } =
+    //   this.userRepository.getByEmail(email);
+    const hashedPassword = '123';
+    const userId = '321';
 
     await this.validatePassword(password, hashedPassword);
 

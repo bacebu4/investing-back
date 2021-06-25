@@ -1,4 +1,12 @@
-import { Entity, Column, PrimaryColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryColumn,
+  ManyToOne,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
+import { SymbolEntity } from './SymbolEntity';
 import { UserEntity } from './UserEntity';
 
 @Entity()
@@ -7,17 +15,15 @@ export class TickerEntity {
   id: string;
 
   @Column()
-  name: string;
-
-  @Column()
   amount: number;
 
   @Column()
   percentageAimingTo: number;
 
-  @Column()
-  symbol: string;
-
   @ManyToOne((type) => UserEntity, (user) => user.tickers)
   userId: UserEntity;
+
+  @OneToOne((type) => SymbolEntity)
+  @JoinColumn()
+  symbol: SymbolEntity;
 }

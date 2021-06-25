@@ -6,6 +6,7 @@ import { UUID } from '../infrastructure/uuid/UUID';
 import { Currency, User } from '../domain/User';
 import { Crypto } from '../infrastructure/crypto/Crypto';
 import { TokenService } from '../infrastructure/token/TokenService';
+import { BaseError, ErrorCode } from '../domain/Error';
 
 type Payload = { email: string; password: string; currency: Currency };
 export interface CreateUser extends Usecase {
@@ -22,6 +23,9 @@ export class CreateUserImpl implements CreateUser {
   ) {}
 
   public async invoke({ email, password, currency }: Payload) {
+    await this.checkIfEmailTaken(email);
+    this.validatePassword(password);
+
     const userId = this.uuid.generate();
     const hashedPassword = await this.crypto.generateHash(password);
 
@@ -30,5 +34,18 @@ export class CreateUserImpl implements CreateUser {
 
     const token = this.tokenService.signWithUserId(userId);
     return token;
+  }
+
+  private async checkIfEmailTaken(email: string) {
+    const user = await this.userRepository.getByEmail(email);
+    if (user) {
+      throw new BaseError(ErrorCode.USER_ALREADY_EXISTS);
+    }
+  }
+
+  private validatePassword(password: string) {
+    if (password.length < 4) {
+      throw new BaseError(ErrorCode.WEAK_PASSWORD);
+    }
   }
 }

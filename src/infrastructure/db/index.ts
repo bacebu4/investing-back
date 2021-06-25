@@ -4,10 +4,12 @@ import { BaseError, ErrorCode } from '../../domain/Error';
 import { TickerEntity } from './entities/TickerEntity';
 import { UserEntity } from './entities/UserEntity';
 import { User } from '../../domain/User';
+import { SymbolEntity } from './entities/SymbolEntity';
 
 export interface Database {
   initialize(): void;
   saveUser(user: User): void;
+  getByEmail(email: string): Promise<UserEntity>;
 }
 
 @injectable()
@@ -30,7 +32,7 @@ export class DatabaseImpl implements Database {
       username: 'bacebu4',
       password: '',
       database: 'investing-back',
-      entities: [UserEntity, TickerEntity],
+      entities: [UserEntity, TickerEntity, SymbolEntity],
       synchronize: true,
       logging: true,
     });
@@ -42,6 +44,12 @@ export class DatabaseImpl implements Database {
     userToSave.email = user.email;
     userToSave.hashedPassword = user.hashedPassword;
     userToSave.id = user.id;
+    userToSave.currency = user.currency;
     await userRepo.save(userToSave);
+  }
+
+  public async getByEmail(email: string) {
+    const userRepo = this.establishedConnection.getRepository(UserEntity);
+    return userRepo.findOne({ email });
   }
 }

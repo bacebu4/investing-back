@@ -29,6 +29,8 @@ export class UserControllerImpl implements UserController {
 
   public async createUser({ body }: RequestPayload) {
     this.logger.info('creating a user');
+    console.log('currency', body.currency);
+
     const token = await this.createUserUsecase.invoke({
       email: body.email,
       password: body.password,

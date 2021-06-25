@@ -5,6 +5,11 @@ import { UUID } from '../../src/infrastructure/uuid/UUID';
 import { CreateUserImpl } from '../../src/usecases/CreateUser';
 import { Currency, User } from '../../src/domain/User';
 
+// TODO
+// [ ] validate email and whether it's already taken
+// [ ] validate password min length
+// [ ] try to create usecases for every request!
+
 const FAKE_UUID = 'generated-uuid-test';
 const mockUUIDGenerate = jest.fn();
 @injectable()
@@ -26,10 +31,15 @@ class CryptoFake {
 }
 
 const mockUserRepoSave = jest.fn();
+const mockGetByEmail = jest.fn();
 @injectable()
 class UserRepoFake {
   save(user: User) {
     mockUserRepoSave(user);
+  }
+
+  getByEmail(email: string) {
+    return mockGetByEmail(email);
   }
 }
 
@@ -50,13 +60,14 @@ fakeContainer.bind(TYPES.UserRepository).to(UserRepoFake);
 fakeContainer.bind(TYPES.TokenService).to(AuthFake);
 fakeContainer.bind(TYPES.CreateUser).to(CreateUserImpl);
 
-const INPUT = { email: 'FAKE_MAIL', password: '123', currency: Currency.Rub };
+const INPUT = { email: 'FAKE_MAIL', password: '12356', currency: Currency.Rub };
 
 describe('CreateUser', () => {
   let createUser;
 
   beforeEach(() => {
     createUser = fakeContainer.get<CreateUserImpl>(TYPES.CreateUser);
+    mockGetByEmail.mockReturnValue(false);
   });
 
   it('calls uuid', async () => {

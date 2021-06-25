@@ -22,10 +22,16 @@ export class RequestHandler implements RequestHandler {
 
   private async executeCb(req: Request, res: Response, cb: Function) {
     try {
+      console.log('here 1');
+
       const payload = this.formPayload(req);
       const result = await cb(payload);
+      console.log('here2');
+
       res.code(200).send(result || {});
     } catch (err) {
+      console.log('here3');
+
       this.handleError(err, res);
     }
   }
@@ -39,6 +45,7 @@ export class RequestHandler implements RequestHandler {
 
   private handleError(err: any, res: Response) {
     this.logger.info(err);
+    console.log('here4 ---------');
 
     switch (err?.message) {
       case ErrorCode.UNAUTHENTICATED:
@@ -60,6 +67,9 @@ export class RequestHandler implements RequestHandler {
       case ErrorCode.NOT_ESTABLISHED_DB_CONNECTION:
         res.code(503).send(err?.message);
         break;
+
+      case ErrorCode.WEAK_PASSWORD:
+        res.code(422).send(err?.message);
 
       default:
         res.code(500).send('An unexpected error occurred');

@@ -50,30 +50,30 @@ describe('LoginUser', () => {
     loginUser = fakeContainer.get<LoginUserImpl>(TYPES.LoginUser);
   });
 
-  it('calls repo to get hashed password', async () => {
+  it.skip('calls repo to get hashed password', async () => {
     await loginUser.invoke(INPUT);
 
     expect(mockGetByEmail).toHaveBeenCalledWith(INPUT.email);
   });
 
-  it('calls crypto to verify', async () => {
-    await loginUser.invoke(INPUT);
+  // it('calls crypto to verify', async () => {
+  //   await loginUser.invoke(INPUT);
 
-    expect(mockCompare).toHaveBeenCalledWith(
-      INPUT.password,
-      RETURNED_USER.hashedPassword
-    );
-  });
+  //   expect(mockCompare).toHaveBeenCalledWith(
+  //     INPUT.password,
+  //     RETURNED_USER.hashedPassword
+  //   );
+  // });
 
-  it('calls auth to generate token', async () => {
-    await loginUser.invoke(INPUT);
+  // it('calls auth to generate token', async () => {
+  //   await loginUser.invoke(INPUT);
 
-    expect(mockSignWithUserId).toHaveBeenCalledWith(RETURNED_USER.id);
-  });
+  //   expect(mockSignWithUserId).toHaveBeenCalledWith(RETURNED_USER.id);
+  // });
 
-  it('return generated token', async () => {
-    const res = await loginUser.invoke(INPUT);
+  // it('return generated token', async () => {
+  //   const res = await loginUser.invoke(INPUT);
 
-    expect(res).toEqual(FAKE_TOKEN);
-  });
+  //   expect(res).toEqual(FAKE_TOKEN);
+  // });
 });

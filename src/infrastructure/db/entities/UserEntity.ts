@@ -6,11 +6,14 @@ export class UserEntity {
   @PrimaryColumn()
   id: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
   hashedPassword: string;
+
+  @Column()
+  currency: string;
 
   @OneToMany((type) => TickerEntity, (ticker) => ticker.userId)
   tickers: TickerEntity[];
