@@ -46,7 +46,6 @@ describe('CreateUser', () => {
         hashedPassword: fake.hash,
         email: INPUT.email,
         currency: INPUT.currency,
-        portfolio: undefined,
       })
     );
   });

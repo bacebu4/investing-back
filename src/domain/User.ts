@@ -10,19 +10,11 @@ export class User {
   email: string;
   currency: Currency;
   hashedPassword: string;
-  portfolio: Portfolio;
 
-  constructor({
-    id,
-    email,
-    currency,
-    portfolio,
-    hashedPassword,
-  }: Partial<User>) {
+  constructor({ id, email, currency, hashedPassword }: User) {
     this.id = id;
     this.email = email;
     this.currency = currency;
-    this.portfolio = portfolio;
     this.hashedPassword = hashedPassword;
   }
 }
