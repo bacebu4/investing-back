@@ -30,7 +30,6 @@ export class UserControllerImpl implements UserController {
 
   public async createUser({ body }: RequestPayload) {
     const createUserUsecase = this.createUserFactory();
-    console.log(createUserUsecase);
 
     const token = await createUserUsecase.invoke({
       email: body.email,

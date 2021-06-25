@@ -22,16 +22,10 @@ export class RequestHandler implements RequestHandler {
 
   private async executeCb(req: Request, res: Response, cb: Function) {
     try {
-      console.log('here 1');
-
       const payload = this.formPayload(req);
       const result = await cb(payload);
-      console.log('here2');
-
       res.code(200).send(result || {});
     } catch (err) {
-      console.log('here3');
-
       this.handleError(err, res);
     }
   }
@@ -45,7 +39,6 @@ export class RequestHandler implements RequestHandler {
 
   private handleError(err: any, res: Response) {
     this.logger.info(err);
-    console.log('here4 ---------');
 
     switch (err?.message) {
       case ErrorCode.UNAUTHENTICATED:
