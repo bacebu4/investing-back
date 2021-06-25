@@ -30,7 +30,7 @@ export class LoginUserImpl implements LoginUser {
 
     await this.validatePassword(password, hashedPassword);
 
-    return this.auth.signWithUserId(userId);
+    return this.auth.signWithUserId(userId).value;
   }
 
   private async validatePassword(password: string, hashedPassword: string) {

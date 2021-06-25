@@ -40,7 +40,7 @@ const mockSignWithUserId = jest.fn();
 class AuthFake {
   signWithUserId(id: string) {
     mockSignWithUserId(id);
-    return fake.uuid;
+    return { value: fake.uuid };
   }
 }
 

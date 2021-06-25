@@ -39,7 +39,7 @@ export class CreateUserImpl implements CreateUser {
     await this.userRepository.save(user);
 
     const token = this.tokenService.signWithUserId(userId);
-    return token;
+    return token.value;
   }
 
   private async checkIfEmailTaken() {
