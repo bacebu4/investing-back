@@ -4,6 +4,7 @@ import { TYPES } from '../../src/infrastructure/container/types';
 import { UUID } from '../../src/infrastructure/uuid/UUID';
 import { CreateUserImpl } from '../../src/usecases/CreateUser';
 import { Currency, User } from '../../src/domain/User';
+import { BaseError } from '../../src/domain/Error';
 
 const FAKE_UUID = 'generated-uuid-test';
 const mockUUIDGenerate = jest.fn();
@@ -58,7 +59,7 @@ fakeContainer.bind(TYPES.CreateUser).to(CreateUserImpl);
 const INPUT = { email: 'FAKE_MAIL', password: '12356', currency: Currency.Rub };
 
 describe('CreateUser', () => {
-  let createUser;
+  let createUser: CreateUserImpl;
 
   beforeEach(() => {
     createUser = fakeContainer.get<CreateUserImpl>(TYPES.CreateUser);
@@ -104,7 +105,24 @@ describe('CreateUser', () => {
     expect(res).toEqual(FAKE_TOKEN);
   });
 
-  it.todo('validate email and whether it is already taken');
+  it('validate email on whether it is already taken', async () => {
+    mockGetByEmail.mockReturnValue(true);
 
-  it.todo('validate password min length');
+    let err;
+    await createUser.invoke(INPUT).catch((e) => (err = e));
+
+    expect(err).toBeInstanceOf(BaseError);
+    expect((err as BaseError).message).toBe('User already exists');
+  });
+
+  it('validate password min length', async () => {
+    let err;
+
+    await createUser
+      .invoke({ ...INPUT, password: '12' })
+      .catch((e) => (err = e));
+
+    expect(err).toBeInstanceOf(BaseError);
+    expect((err as BaseError).message).toBe('Password is weak.');
+  });
 });
