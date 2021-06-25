@@ -5,11 +5,6 @@ import { UUID } from '../../src/infrastructure/uuid/UUID';
 import { CreateUserImpl } from '../../src/usecases/CreateUser';
 import { Currency, User } from '../../src/domain/User';
 
-// TODO
-// [ ] validate email and whether it's already taken
-// [ ] validate password min length
-// [ ] try to create usecases for every request!
-
 const FAKE_UUID = 'generated-uuid-test';
 const mockUUIDGenerate = jest.fn();
 @injectable()
@@ -108,4 +103,8 @@ describe('CreateUser', () => {
 
     expect(res).toEqual(FAKE_TOKEN);
   });
+
+  it.todo('validate email and whether it is already taken');
+
+  it.todo('validate password min length');
 });
