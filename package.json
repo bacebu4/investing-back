@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "start": "nodemon index.ts",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "keywords": [],
   "author": "",
