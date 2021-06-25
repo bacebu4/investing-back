@@ -15,6 +15,10 @@ export interface CreateUser extends Usecase {
 
 @injectable()
 export class CreateUserImpl implements CreateUser {
+  private email: string;
+  private password: string;
+  private currency: Currency;
+
   public constructor(
     @inject(TYPES.UserRepository) private userRepository: UserRepository,
     @inject(TYPES.UUID) private uuid: UUID,
@@ -23,8 +27,12 @@ export class CreateUserImpl implements CreateUser {
   ) {}
 
   public async invoke({ email, password, currency }: Payload) {
-    await this.checkIfEmailTaken(email);
-    this.validatePassword(password);
+    this.email = email;
+    this.password = password;
+    this.currency = currency;
+
+    await this.checkIfEmailTaken();
+    this.validatePassword();
 
     const userId = this.uuid.generate();
     const hashedPassword = await this.crypto.generateHash(password);
@@ -36,15 +44,15 @@ export class CreateUserImpl implements CreateUser {
     return token;
   }
 
-  private async checkIfEmailTaken(email: string) {
-    const user = await this.userRepository.getByEmail(email);
+  private async checkIfEmailTaken() {
+    const user = await this.userRepository.getByEmail(this.email);
     if (user) {
       throw new BaseError(ErrorCode.USER_ALREADY_EXISTS);
     }
   }
 
-  private validatePassword(password: string) {
-    if (password.length < 4) {
+  private validatePassword() {
+    if (this.password.length < 4) {
       throw new BaseError(ErrorCode.WEAK_PASSWORD);
     }
   }

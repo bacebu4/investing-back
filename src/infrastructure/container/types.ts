@@ -13,4 +13,5 @@ export const TYPES = {
   UUID: Symbol.for('UUID'),
   Database: Symbol.for('Database'),
   Crypto: Symbol.for('Crypto'),
+  FactoryCreateUser: Symbol.for('FactoryCreateUser'),
 };

@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { Container } from 'inversify';
+import { Container, interfaces } from 'inversify';
 import { GetUser, GetUserImpl } from '../../usecases/GetUser';
 import {
   UserRepository,
@@ -34,10 +34,15 @@ container
 container.bind<UUID>(TYPES.UUID).to(UUIDImpl).inSingletonScope();
 container.bind<Crypto>(TYPES.Crypto).to(CryptoImpl).inSingletonScope();
 container.bind<GetUser>(TYPES.GetUser).to(GetUserImpl).inSingletonScope();
+container.bind<CreateUser>(TYPES.CreateUser).to(CreateUserImpl);
+
 container
-  .bind<CreateUser>(TYPES.CreateUser)
-  .to(CreateUserImpl)
-  .inSingletonScope();
+  .bind<interfaces.Factory<CreateUser>>(TYPES.FactoryCreateUser)
+  .toFactory<CreateUser>((context: interfaces.Context) => {
+    return () => {
+      return context.container.get<CreateUserImpl>(TYPES.CreateUser);
+    };
+  });
 container.bind<LoginUser>(TYPES.LoginUser).to(LoginUserImpl).inSingletonScope();
 container
   .bind<UserController>(TYPES.UserController)

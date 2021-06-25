@@ -17,7 +17,8 @@ export interface UserController {
 export class UserControllerImpl implements UserController {
   constructor(
     @inject(TYPES.GetUser) private getUserUsecase: GetUser,
-    @inject(TYPES.CreateUser) private createUserUsecase: CreateUser,
+    @inject(TYPES.FactoryCreateUser)
+    private createUserFactory: () => CreateUser,
     @inject(TYPES.LoginUser) private loginUserUsecase: LoginUser,
     @inject(TYPES.Logger) private logger: Logger
   ) {}
@@ -28,10 +29,10 @@ export class UserControllerImpl implements UserController {
   }
 
   public async createUser({ body }: RequestPayload) {
-    this.logger.info('creating a user');
-    console.log('currency', body.currency);
+    const createUserUsecase = this.createUserFactory();
+    console.log(createUserUsecase);
 
-    const token = await this.createUserUsecase.invoke({
+    const token = await createUserUsecase.invoke({
       email: body.email,
       password: body.password,
       currency: body.currency,
