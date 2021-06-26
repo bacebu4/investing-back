@@ -16,6 +16,9 @@ export interface LoginUser extends Usecase {
 
 @injectable()
 export class LoginUserImpl implements LoginUser {
+  private receivedPassword: string;
+  private hashedPassword: string;
+
   public constructor(
     @inject(TYPES.UserRepository) private userRepository: UserRepository,
     @inject(TYPES.Crypto) private crypto: Crypto,
@@ -23,20 +26,23 @@ export class LoginUserImpl implements LoginUser {
   ) {}
 
   public async invoke({ email, password }: Payload) {
-    // const { hashedPassword, id: userId } =
-    //   this.userRepository.getByEmail(email);
-    const hashedPassword = '123';
-    const userId = '321';
+    // this.receivedPassword = password;
 
-    await this.validatePassword(password, hashedPassword);
+    // const { hashedPassword, id: userId } = await this.userRepository.getByEmail(
+    //   email
+    // );
+    // this.hashedPassword = hashedPassword;
 
-    return this.auth.signWithUserId(userId).value;
+    // await this.validateReceivedPassword();
+
+    // return this.auth.signWithUserId(userId).value;
+    return '123';
   }
 
-  private async validatePassword(password: string, hashedPassword: string) {
+  private async validateReceivedPassword() {
     const res = await this.crypto.compareValueWithHash(
-      password,
-      hashedPassword
+      this.receivedPassword,
+      this.hashedPassword
     );
 
     if (this.passwordNotMatched(res)) {

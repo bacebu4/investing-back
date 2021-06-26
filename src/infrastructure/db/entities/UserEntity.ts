@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
+import { Currency } from '../../../domain/User';
 import { TickerEntity } from './TickerEntity';
 
 @Entity()
@@ -13,7 +14,7 @@ export class UserEntity {
   hashedPassword: string;
 
   @Column()
-  currency: string;
+  currency: Currency;
 
   @OneToMany((type) => TickerEntity, (ticker) => ticker.userId)
   tickers: TickerEntity[];

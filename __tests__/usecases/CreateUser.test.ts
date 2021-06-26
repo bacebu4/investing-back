@@ -21,7 +21,8 @@ describe('CreateUser', () => {
 
   beforeEach(() => {
     createUser = setupData.fakeContainer.get<CreateUserImpl>(TYPES.CreateUser);
-    setupData.mockGetByEmail.mockReturnValue(false);
+    setupData.mockGetByEmailLeft.mockReturnValue({});
+    setupData.mockGetByEmailRight(null);
   });
 
   it('calls uuid', async () => {
@@ -63,7 +64,7 @@ describe('CreateUser', () => {
   });
 
   it('validate email on whether it is already taken', async () => {
-    setupData.mockGetByEmail.mockReturnValue(true);
+    setupData.mockGetByEmailLeft.mockReturnValue(null);
 
     let err;
     await createUser.invoke(INPUT).catch((e) => (err = e));

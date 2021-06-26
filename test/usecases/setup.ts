@@ -24,6 +24,8 @@ class CryptoFake {
 
 const mockSave = jest.fn();
 const mockGetByEmail = jest.fn();
+const mockGetByEmailLeft = jest.fn();
+const mockGetByEmailRight = jest.fn();
 @injectable()
 class UserRepoFake {
   save(user: User) {
@@ -31,7 +33,8 @@ class UserRepoFake {
   }
 
   getByEmail(email: string) {
-    return mockGetByEmail(email);
+    mockGetByEmail(email);
+    return [mockGetByEmailLeft(), mockGetByEmailRight()];
   }
 }
 
@@ -54,6 +57,8 @@ export type SetupUsecaseData = {
   fakeContainer: Container;
   mockSave: jest.Mock<any, any>;
   mockGetByEmail: jest.Mock<any, any>;
+  mockGetByEmailLeft: jest.Mock<any, any>;
+  mockGetByEmailRight: jest.Mock<any, any>;
   mockCryptoGenerateHash: jest.Mock<any, any>;
   mockSignWithUserId: jest.Mock<any, any>;
   mockUUIDGenerate: jest.Mock<any, any>;
@@ -64,6 +69,8 @@ export function setup(): SetupUsecaseData {
     fakeContainer,
     mockSave,
     mockGetByEmail,
+    mockGetByEmailLeft,
+    mockGetByEmailRight,
     mockCryptoGenerateHash,
     mockSignWithUserId,
     mockUUIDGenerate,

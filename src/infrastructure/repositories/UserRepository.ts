@@ -1,16 +1,18 @@
 import { inject, injectable } from 'inversify';
-import { Portfolio } from '../../domain/Portfolio';
-import { Ticker } from '../../domain/Ticker';
 import { Currency, User } from '../../domain/User';
 import { TYPES } from '../container/types';
 import { Database } from '../db';
-import { UserEntity } from '../db/entities/UserEntity';
+import { DatabaseErrorCode } from '../db/DatabaseError';
 import { Logger } from '../logger/Logger';
+import {
+  UserRepositoryError,
+  UserRepositoryErrorCode,
+} from './UserRepositoryError';
 
 export interface UserRepository {
   get(id: string): User;
   save(user: User): void;
-  getByEmail(email: string): Promise<UserEntity>;
+  getByEmail(email: string): Promise<[UserRepositoryError | null, User | null]>;
 }
 
 @injectable()
@@ -19,7 +21,7 @@ export class UserRepositoryImpl implements UserRepository {
     @inject(TYPES.Logger) private logger: Logger,
     @inject(TYPES.Database) private db: Database
   ) {
-    this.test();
+    // this.test();
   }
 
   private async test() {
@@ -35,15 +37,33 @@ export class UserRepositoryImpl implements UserRepository {
       id,
       email: 'test@test.com',
       currency: Currency.Rub,
+      hashedPassword: '123',
     });
 
     return user;
   }
 
-  async getByEmail(email: string) {
-    const user = await this.db.getByEmail(email);
+  async getByEmail(
+    email: string
+  ): Promise<[UserRepositoryError | null, User | null]> {
+    const [error, user] = await this.db.getByEmail(email);
 
-    return user;
+    if (error?.message === DatabaseErrorCode.NOT_FOUND) {
+      return [new UserRepositoryError(UserRepositoryErrorCode.NOT_FOUND), null];
+    }
+
+    if (user) {
+      const userToReturn = new User({
+        id: user.id,
+        email: user.email,
+        currency: user.currency,
+        hashedPassword: user.hashedPassword,
+      });
+
+      return [null, userToReturn];
+    }
+
+    throw new Error();
   }
 
   public async save(user: User) {

@@ -17,6 +17,7 @@ export interface CreateUser extends Usecase {
 export class CreateUserImpl implements CreateUser {
   private email: string;
   private password: string;
+  private currency: Currency;
 
   public constructor(
     @inject(TYPES.UserRepository) private userRepository: UserRepository,
@@ -28,23 +29,22 @@ export class CreateUserImpl implements CreateUser {
   public async invoke({ email, password, currency }: Payload) {
     this.email = email;
     this.password = password;
+    this.currency = currency;
 
     await this.checkIfEmailTaken();
     this.validatePassword();
 
-    const userId = this.uuid.generate();
-    const hashedPassword = await this.crypto.generateHash(password);
-
-    const user = new User({ id: userId, email, currency, hashedPassword });
+    const user = await this.formNewUser();
     await this.userRepository.save(user);
 
-    const token = this.tokenService.signWithUserId(userId);
+    const token = this.tokenService.signWithUserId(user.id);
     return token.value;
   }
 
   private async checkIfEmailTaken() {
-    const user = await this.userRepository.getByEmail(this.email);
-    if (user) {
+    const [error] = await this.userRepository.getByEmail(this.email);
+
+    if (!error) {
       throw new BaseError(ErrorCode.USER_ALREADY_EXISTS);
     }
   }
@@ -53,5 +53,16 @@ export class CreateUserImpl implements CreateUser {
     if (this.password.length < 4) {
       throw new BaseError(ErrorCode.WEAK_PASSWORD);
     }
+  }
+
+  private async formNewUser() {
+    const userId = this.uuid.generate();
+    const hashedPassword = await this.crypto.generateHash(this.password);
+    return new User({
+      id: userId,
+      email: this.email,
+      currency: this.currency,
+      hashedPassword,
+    });
   }
 }

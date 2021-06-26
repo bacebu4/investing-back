@@ -5,11 +5,12 @@ import { TickerEntity } from './entities/TickerEntity';
 import { UserEntity } from './entities/UserEntity';
 import { User } from '../../domain/User';
 import { SymbolEntity } from './entities/SymbolEntity';
+import { DatabaseError, DatabaseErrorCode } from './DatabaseError';
 
 export interface Database {
   initialize(): void;
   saveUser(user: User): void;
-  getByEmail(email: string): Promise<UserEntity>;
+  getByEmail(email: string): Promise<[DatabaseError | null, UserEntity | null]>;
 }
 
 @injectable()
@@ -48,8 +49,14 @@ export class DatabaseImpl implements Database {
     await userRepo.save(userToSave);
   }
 
-  public async getByEmail(email: string) {
+  public async getByEmail(
+    email: string
+  ): Promise<[DatabaseError | null, UserEntity | null]> {
     const userRepo = this.establishedConnection.getRepository(UserEntity);
-    return userRepo.findOne({ email });
+    const user = await userRepo.findOne({ email });
+    if (!user) {
+      return [new DatabaseError(DatabaseErrorCode.NOT_FOUND), null];
+    }
+    return [null, user];
   }
 }

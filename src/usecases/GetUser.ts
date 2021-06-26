@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { User } from '../domain/User';
+import { Currency, User } from '../domain/User';
 import { UserRepository } from '../infrastructure/repositories/UserRepository';
 import { TYPES } from '../infrastructure/container/types';
 import { Usecase } from './interface';
@@ -17,7 +17,13 @@ export class GetUserImpl implements GetUser {
   ) {}
 
   public invoke(token: string) {
-    const userId = this.auth.verifyAndGetUserId(token);
-    return this.userRepository.get(userId);
+    // const userId = this.auth.verifyAndGetUserId(token);
+    // return this.userRepository.get(userId);
+    return new User({
+      id: '1',
+      email: '1',
+      currency: Currency.Rub,
+      hashedPassword: '123',
+    });
   }
 }
