@@ -39,18 +39,18 @@ export class LoginUserImpl implements LoginUser {
     return '123';
   }
 
-  private async validateReceivedPassword() {
-    const res = await this.crypto.compareValueWithHash(
-      this.receivedPassword,
-      this.hashedPassword
-    );
+  // private async validateReceivedPassword() {
+  //   const res = await this.crypto.compareValueWithHash(
+  //     this.receivedPassword,
+  //     this.hashedPassword
+  //   );
 
-    if (this.passwordNotMatched(res)) {
-      throw new BaseError(ErrorCode.WRONG_PASSWORD_OR_EMAIL);
-    }
-  }
+  //   if (this.passwordNotMatched(res)) {
+  //     throw new BaseError(ErrorCode.WRONG_PASSWORD_OR_EMAIL);
+  //   }
+  // }
 
-  private passwordNotMatched(value: boolean) {
-    return !value;
-  }
+  // private passwordNotMatched(value: boolean) {
+  //   return !value;
+  // }
 }

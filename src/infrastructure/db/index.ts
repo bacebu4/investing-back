@@ -21,7 +21,7 @@ export class DatabaseImpl implements Database {
     if (this.connection) {
       return this.connection;
     } else {
-      throw new BaseError(ErrorCode.NOT_ESTABLISHED_DB_CONNECTION);
+      throw new DatabaseError(DatabaseErrorCode.NOT_ESTABLISHED_DB_CONNECTION);
     }
   }
 
@@ -35,7 +35,7 @@ export class DatabaseImpl implements Database {
       database: 'investing-back',
       entities: [UserEntity, TickerEntity, SymbolEntity],
       synchronize: true,
-      logging: true,
+      logging: false,
     });
   }
 

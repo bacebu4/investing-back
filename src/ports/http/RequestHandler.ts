@@ -38,35 +38,11 @@ export class RequestHandler implements RequestHandler {
   }
 
   private handleError(err: any, res: Response) {
-    this.logger.info(err);
-
-    switch (err?.message) {
-      case ErrorCode.UNAUTHENTICATED:
-        res.code(401).send(err?.message);
-        break;
-
-      case ErrorCode.USER_ALREADY_EXISTS:
-        res.code(409).send(err?.message);
-        break;
-
-      case ErrorCode.WRONG_PASSWORD_OR_EMAIL:
-        res.code(401).send(err?.message);
-        break;
-
-      case ErrorCode.CORRUPTED:
-        res.code(422).send(err?.message);
-        break;
-
-      case ErrorCode.NOT_ESTABLISHED_DB_CONNECTION:
-        res.code(503).send(err?.message);
-        break;
-
-      case ErrorCode.WEAK_PASSWORD:
-        res.code(422).send(err?.message);
-
-      default:
-        res.code(500).send('An unexpected error occurred');
-        break;
+    if (err?.length) {
+      const errors = err.map((e) => ({ message: e?.message }));
+      res.code(400).send(errors);
+    } else {
+      res.code(400).send(err?.message || 'An unexpected error occurred');
     }
   }
 }

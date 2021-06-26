@@ -5,6 +5,7 @@ import { Currency } from '../../src/domain/User';
 import { BaseError } from '../../src/domain/Error';
 import { setup, SetupUsecaseData } from '../../test/usecases/setup';
 import { fake } from '../../test/usecases/fake';
+import { UsecaseError } from '../../src/usecases/UsecaseError';
 
 const INPUT = { email: 'FAKE_MAIL', password: '12356', currency: Currency.Rub };
 
@@ -69,8 +70,8 @@ describe('CreateUser', () => {
     let err;
     await createUser.invoke(INPUT).catch((e) => (err = e));
 
-    expect(err).toBeInstanceOf(BaseError);
-    expect((err as BaseError).message).toBe('User already exists');
+    expect(err[0]).toBeInstanceOf(UsecaseError);
+    expect((err[0] as UsecaseError).message).toBe('User already exists');
   });
 
   it('validate password min length', async () => {
@@ -80,7 +81,7 @@ describe('CreateUser', () => {
       .invoke({ ...INPUT, password: '12' })
       .catch((e) => (err = e));
 
-    expect(err).toBeInstanceOf(BaseError);
-    expect((err as BaseError).message).toBe('Password is weak.');
+    expect(err[0]).toBeInstanceOf(UsecaseError);
+    expect((err[0] as UsecaseError).message).toBe('Password is weak.');
   });
 });

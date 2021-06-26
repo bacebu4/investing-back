@@ -6,7 +6,7 @@ import { UUID } from '../infrastructure/uuid/UUID';
 import { Currency, User } from '../domain/User';
 import { Crypto } from '../infrastructure/crypto/Crypto';
 import { TokenService } from '../infrastructure/token/TokenService';
-import { BaseError, ErrorCode } from '../domain/Error';
+import { UsecaseError, UsecaseErrorCode } from './UsecaseError';
 
 type Payload = { email: string; password: string; currency: Currency };
 export interface CreateUser extends Usecase {
@@ -18,6 +18,7 @@ export class CreateUserImpl implements CreateUser {
   private email: string;
   private password: string;
   private currency: Currency;
+  private errors: UsecaseError[] = [];
 
   public constructor(
     @inject(TYPES.UserRepository) private userRepository: UserRepository,
@@ -34,6 +35,10 @@ export class CreateUserImpl implements CreateUser {
     await this.checkIfEmailTaken();
     this.validatePassword();
 
+    if (this.errors.length) {
+      throw this.errors;
+    }
+
     const user = await this.formNewUser();
     await this.userRepository.save(user);
 
@@ -45,13 +50,13 @@ export class CreateUserImpl implements CreateUser {
     const [error] = await this.userRepository.getByEmail(this.email);
 
     if (!error) {
-      throw new BaseError(ErrorCode.USER_ALREADY_EXISTS);
+      this.errors.push(new UsecaseError(UsecaseErrorCode.USER_ALREADY_EXISTS));
     }
   }
 
   private validatePassword() {
     if (this.password.length < 4) {
-      throw new BaseError(ErrorCode.WEAK_PASSWORD);
+      this.errors.push(new UsecaseError(UsecaseErrorCode.WEAK_PASSWORD));
     }
   }
 
