@@ -14,4 +14,5 @@ export const TYPES = {
   Database: Symbol.for('Database'),
   Crypto: Symbol.for('Crypto'),
   FactoryCreateUser: Symbol.for('FactoryCreateUser'),
+  CreateUserController: Symbol.for('CreateUserController'),
 };

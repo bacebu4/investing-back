@@ -1,16 +1,18 @@
 import { inject, injectable } from 'inversify';
-import { UserRepository } from '../infrastructure/repositories/UserRepository';
-import { TYPES } from '../infrastructure/container/types';
-import { Usecase } from './interface';
-import { UUID } from '../infrastructure/uuid/UUID';
-import { Currency, User } from '../domain/User';
-import { Crypto } from '../infrastructure/crypto/Crypto';
-import { TokenService } from '../infrastructure/token/TokenService';
-import { UsecaseError, UsecaseErrorCode } from './UsecaseError';
+import { UserRepository } from '../../infrastructure/repositories/UserRepository';
+import { TYPES } from '../../infrastructure/container/types';
+import { Usecase } from '../interface';
+import { UUID } from '../../infrastructure/uuid/UUID';
+import { Currency, User } from '../../domain/User';
+import { Crypto } from '../../infrastructure/crypto/Crypto';
+import { TokenService } from '../../infrastructure/token/TokenService';
+import { UsecaseError, UsecaseErrorCode } from '../UsecaseError';
+import { CreateUserDTO } from './CreateUserDTO';
 
-type Payload = { email: string; password: string; currency: Currency };
 export interface CreateUser extends Usecase {
-  invoke(payload: Payload): Promise<string>;
+  invoke(
+    payload: CreateUserDTO
+  ): Promise<[UsecaseError[], null] | [null, string]>;
 }
 
 @injectable()
@@ -27,7 +29,11 @@ export class CreateUserImpl implements CreateUser {
     @inject(TYPES.TokenService) private tokenService: TokenService
   ) {}
 
-  public async invoke({ email, password, currency }: Payload) {
+  public async invoke({
+    email,
+    password,
+    currency,
+  }: CreateUserDTO): Promise<[UsecaseError[], null] | [null, string]> {
     this.email = email;
     this.password = password;
     this.currency = currency;
@@ -35,14 +41,14 @@ export class CreateUserImpl implements CreateUser {
     await this.validation();
 
     if (this.hasErrors()) {
-      throw this.errors;
+      return [this.errors, null];
     }
 
     const user = await this.formNewUser();
     await this.userRepository.save(user);
 
     const token = this.tokenService.signWithUserId(user.id);
-    return token.value;
+    return [null, token.value];
   }
 
   private async validation() {
@@ -51,9 +57,9 @@ export class CreateUserImpl implements CreateUser {
   }
 
   private async checkIfEmailTaken() {
-    const [error] = await this.userRepository.getByEmail(this.email);
+    const [emailNotTaken] = await this.userRepository.getByEmail(this.email);
 
-    if (!error) {
+    if (!emailNotTaken) {
       this.errors.push(new UsecaseError(UsecaseErrorCode.USER_ALREADY_EXISTS));
     }
   }

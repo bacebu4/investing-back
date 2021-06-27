@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { TYPES } from '../../src/infrastructure/container/types';
-import { CreateUserImpl } from '../../src/usecases/CreateUser';
+import { CreateUserImpl } from '../../src/usecases/CreateUser/CreateUserUsecase';
 import { Currency } from '../../src/domain/User';
 import { BaseError } from '../../src/domain/Error';
 import { setup, SetupUsecaseData } from '../../test/usecases/setup';
