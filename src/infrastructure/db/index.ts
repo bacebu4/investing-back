@@ -1,6 +1,5 @@
 import { injectable } from 'inversify';
 import { Connection, createConnection } from 'typeorm';
-import { BaseError, ErrorCode } from '../../domain/Error';
 import { TickerEntity } from './entities/TickerEntity';
 import { UserEntity } from './entities/UserEntity';
 import { User } from '../../domain/User';
@@ -52,11 +51,17 @@ export class DatabaseImpl implements Database {
   public async getByEmail(
     email: string
   ): Promise<[DatabaseError | null, UserEntity | null]> {
-    const userRepo = this.establishedConnection.getRepository(UserEntity);
-    const user = await userRepo.findOne({ email });
-    if (!user) {
-      return [new DatabaseError(DatabaseErrorCode.NOT_FOUND), null];
+    try {
+      const userRepo = this.establishedConnection.getRepository(UserEntity);
+      const user = await userRepo.findOne({ email });
+
+      if (!user) {
+        return [new DatabaseError(DatabaseErrorCode.NOT_FOUND), null];
+      }
+
+      return [null, user];
+    } catch (error) {
+      return [new DatabaseError(DatabaseErrorCode.UNEXPECTED_DB_ERROR), null];
     }
-    return [null, user];
   }
 }
