@@ -2,12 +2,12 @@ import 'reflect-metadata';
 import { TYPES } from '../../src/infrastructure/container/types';
 import { CreateUserImpl } from '../../src/usecases/CreateUser/CreateUserUsecase';
 import { Currency } from '../../src/domain/User';
-import { BaseError } from '../../src/domain/Error';
 import { setup, SetupUsecaseData } from '../../test/usecases/setup';
 import { fake } from '../../test/usecases/fake';
 import { UsecaseError } from '../../src/usecases/UsecaseError';
 
 const INPUT = { email: 'FAKE_MAIL', password: '12356', currency: Currency.Rub };
+const INVALID_PASSWORD = '123';
 
 describe('CreateUser', () => {
   let createUser: CreateUserImpl;
@@ -59,29 +59,28 @@ describe('CreateUser', () => {
   });
 
   it('returns token with userId', async () => {
-    const res = await createUser.invoke(INPUT);
+    const [err, token] = await createUser.invoke(INPUT);
 
-    expect(res).toEqual(fake.uuid);
+    expect(token).toEqual(fake.uuid);
+    expect(err).toBe(null);
   });
 
   it('validate email on whether it is already taken', async () => {
     setupData.mockGetByEmailLeft.mockReturnValue(null);
 
-    let err;
-    await createUser.invoke(INPUT).catch((e) => (err = e));
+    const [err, token] = await createUser.invoke(INPUT);
 
     expect(err[0]).toBeInstanceOf(UsecaseError);
-    expect((err[0] as UsecaseError).message).toBe('User already exists');
+    expect(token).toBe(null);
   });
 
   it('validate password min length', async () => {
-    let err;
-
-    await createUser
-      .invoke({ ...INPUT, password: '12' })
-      .catch((e) => (err = e));
+    const [err, token] = await createUser.invoke({
+      ...INPUT,
+      password: INVALID_PASSWORD,
+    });
 
     expect(err[0]).toBeInstanceOf(UsecaseError);
-    expect((err[0] as UsecaseError).message).toBe('Password is weak.');
+    expect(token).toBe(null);
   });
 });

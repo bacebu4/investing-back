@@ -2,8 +2,9 @@ import { inject, injectable } from 'inversify';
 import { TYPES } from '../../infrastructure/container/types';
 import {
   BaseController,
+  ControllerResponse,
+  ControllerStatus,
   Request,
-  Response,
 } from '../../ports/http/BaseController';
 import { CreateUserDTO } from './CreateUserDTO';
 import { CreateUser } from './CreateUserUsecase';
@@ -19,23 +20,22 @@ export class CreateUserController extends BaseController {
     super();
   }
 
-  async executeImpl(req: Request, res: Response): Promise<any> {
+  async executeImpl(req: Request): Promise<ControllerResponse> {
     const dto: CreateUserDTO = req.body as CreateUserDTO;
     this.useCase = this.createUserFactory();
 
-    try {
-      const [errors, token] = await this.useCase.invoke(dto);
+    const [errors, token] = await this.useCase.invoke(dto);
 
-      if (errors?.length) {
-        const prettyErrors = errors.map((e) => ({ message: e?.message }));
-        return this.clientError(res, prettyErrors);
-      } else {
-        return this.ok(res, token);
-      }
-    } catch (err) {
-      console.log(err);
-
-      return this.fail(res, err);
+    if (errors?.length) {
+      return {
+        status: ControllerStatus.clientError,
+        data: errors.map((e) => ({ message: this.formatError(e) })),
+      };
+    } else {
+      return {
+        status: ControllerStatus.ok,
+        data: token,
+      };
     }
   }
 }

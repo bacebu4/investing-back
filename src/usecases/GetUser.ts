@@ -6,7 +6,7 @@ import { Usecase } from './interface';
 import { TokenService } from '../infrastructure/token/TokenService';
 
 export interface GetUser extends Usecase {
-  invoke(id: string): User;
+  invoke(id: string): any;
 }
 
 @injectable()

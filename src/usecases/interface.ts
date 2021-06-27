@@ -1,3 +1,3 @@
 export interface Usecase {
-  invoke(...args: any[]): any;
+  invoke(...args: any[]): Promise<[Error[], null] | [null, any]>;
 }

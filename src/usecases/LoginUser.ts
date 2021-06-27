@@ -11,7 +11,7 @@ type Payload = {
   password: string;
 };
 export interface LoginUser extends Usecase {
-  invoke({ email, password }: Payload): Promise<string>;
+  invoke({ email, password }: Payload): Promise<any>;
 }
 
 @injectable()
