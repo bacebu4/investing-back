@@ -20,6 +20,13 @@ export class RoutesImpl implements Routes {
     @inject(TYPES.RequestHandler) private requestHandler: RequestHandler
   ) {}
 
+  get list() {
+    return this.listWithoutRequestHandler.map((route) => ({
+      ...route,
+      handler: this.requestHandler.handle(route.handler),
+    }));
+  }
+
   get listWithoutRequestHandler() {
     return [
       {
@@ -56,12 +63,5 @@ export class RoutesImpl implements Routes {
         },
       },
     ];
-  }
-
-  get list() {
-    return this.listWithoutRequestHandler.map((route) => ({
-      ...route,
-      handler: this.requestHandler.handle(route.handler),
-    }));
   }
 }
