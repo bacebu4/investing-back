@@ -6,7 +6,11 @@ import { setup, SetupUsecaseData } from '../../test/usecases/setup';
 import { fake } from '../../test/usecases/fake';
 import { UsecaseError } from '../../src/usecases/UsecaseError';
 
-const INPUT = { email: 'FAKE_MAIL', password: '12356', currency: Currency.Rub };
+const VALID_INPUT = {
+  email: 'FAKE_MAIL',
+  password: '12356',
+  currency: Currency.Rub,
+};
 const INVALID_PASSWORD = '123';
 
 describe('CreateUser', () => {
@@ -27,39 +31,39 @@ describe('CreateUser', () => {
   });
 
   it('calls uuid', async () => {
-    await createUser.invoke(INPUT);
+    await createUser.invoke(VALID_INPUT);
 
     expect(setupData.mockUUIDGenerate).toHaveBeenCalledTimes(1);
   });
 
   it('calls crypto', async () => {
-    await createUser.invoke(INPUT);
+    await createUser.invoke(VALID_INPUT);
 
     expect(setupData.mockCryptoGenerateHash).toHaveBeenCalledTimes(1);
   });
 
   it('calls repo with user', async () => {
-    await createUser.invoke(INPUT);
+    await createUser.invoke(VALID_INPUT);
 
     expect(setupData.mockSave).toHaveBeenCalledTimes(1);
     expect(setupData.mockSave).toHaveBeenCalledWith(
       expect.objectContaining({
         id: fake.uuid,
         hashedPassword: fake.hash,
-        email: INPUT.email,
-        currency: INPUT.currency,
+        email: VALID_INPUT.email,
+        currency: VALID_INPUT.currency,
       })
     );
   });
 
   it('calls auth', async () => {
-    await createUser.invoke(INPUT);
+    await createUser.invoke(VALID_INPUT);
 
     expect(setupData.mockSignWithUserId).toHaveBeenCalledWith(fake.uuid);
   });
 
   it('returns token with userId', async () => {
-    const [err, token] = await createUser.invoke(INPUT);
+    const [err, token] = await createUser.invoke(VALID_INPUT);
 
     expect(token).toEqual(fake.uuid);
     expect(err).toBe(null);
@@ -68,7 +72,7 @@ describe('CreateUser', () => {
   it('validate email on whether it is already taken', async () => {
     setupData.mockGetByEmailLeft.mockReturnValue(null);
 
-    const [err, token] = await createUser.invoke(INPUT);
+    const [err, token] = await createUser.invoke(VALID_INPUT);
 
     expect(err[0]).toBeInstanceOf(UsecaseError);
     expect(token).toBe(null);
@@ -76,7 +80,7 @@ describe('CreateUser', () => {
 
   it('validate password min length', async () => {
     const [err, token] = await createUser.invoke({
-      ...INPUT,
+      ...VALID_INPUT,
       password: INVALID_PASSWORD,
     });
 

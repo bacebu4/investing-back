@@ -8,6 +8,7 @@ import { Crypto } from '../../infrastructure/crypto/Crypto';
 import { TokenService } from '../../infrastructure/token/TokenService';
 import { UsecaseError, UsecaseErrorCode } from '../UsecaseError';
 import { CreateUserDTO } from './CreateUserDTO';
+import { Either, left, right } from '../../lib/Either';
 
 export interface CreateUser extends Usecase {
   invoke(
@@ -33,7 +34,7 @@ export class CreateUserImpl implements CreateUser {
     email,
     password,
     currency,
-  }: CreateUserDTO): Promise<[UsecaseError[], null] | [null, string]> {
+  }: CreateUserDTO): Promise<Either<UsecaseError[], string>> {
     this.email = email;
     this.password = password;
     this.currency = currency;
@@ -41,14 +42,14 @@ export class CreateUserImpl implements CreateUser {
     await this.validation();
 
     if (this.hasErrors()) {
-      return [this.errors, null];
+      return left(this.errors);
     }
 
     const user = await this.formNewUser();
     await this.userRepository.save(user);
 
     const token = this.tokenService.signWithUserId(user.id);
-    return [null, token.value];
+    return right(token.value);
   }
 
   private async validation() {

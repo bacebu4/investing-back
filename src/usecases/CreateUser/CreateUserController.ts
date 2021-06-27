@@ -1,5 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../../infrastructure/container/types';
+import { fold } from '../../lib/Either';
 import {
   BaseController,
   ControllerResponse,
@@ -24,18 +25,22 @@ export class CreateUserController extends BaseController {
     const dto: CreateUserDTO = req.body as CreateUserDTO;
     this.useCase = this.createUserFactory();
 
-    const [errors, token] = await this.useCase.invoke(dto);
+    const res = await this.useCase.invoke(dto);
 
-    if (errors?.length) {
-      return {
-        status: ControllerStatus.clientError,
-        data: errors.map((e) => ({ message: this.formatError(e) })),
-      };
-    } else {
-      return {
-        status: ControllerStatus.ok,
-        data: token,
-      };
-    }
+    return fold(
+      res,
+      (e) => {
+        return {
+          status: ControllerStatus.clientError,
+          data: e.map((e) => ({ message: this.formatError(e) })),
+        };
+      },
+      (token) => {
+        return {
+          status: ControllerStatus.ok,
+          data: token,
+        };
+      }
+    );
   }
 }
