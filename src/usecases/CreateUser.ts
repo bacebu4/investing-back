@@ -32,10 +32,9 @@ export class CreateUserImpl implements CreateUser {
     this.password = password;
     this.currency = currency;
 
-    await this.checkIfEmailTaken();
-    this.validatePassword();
+    await this.validation();
 
-    if (this.errors.length) {
+    if (this.hasErrors()) {
       throw this.errors;
     }
 
@@ -44,6 +43,11 @@ export class CreateUserImpl implements CreateUser {
 
     const token = this.tokenService.signWithUserId(user.id);
     return token.value;
+  }
+
+  private async validation() {
+    await this.checkIfEmailTaken();
+    this.validatePassword();
   }
 
   private async checkIfEmailTaken() {
@@ -58,6 +62,10 @@ export class CreateUserImpl implements CreateUser {
     if (this.password.length < 4) {
       this.errors.push(new UsecaseError(UsecaseErrorCode.WEAK_PASSWORD));
     }
+  }
+
+  private hasErrors() {
+    return this.errors.length;
   }
 
   private async formNewUser() {
