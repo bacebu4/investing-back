@@ -1,5 +1,4 @@
 import { inject, injectable } from 'inversify';
-import { ErrorCode } from '../../domain/Error';
 import { TYPES } from '../../infrastructure/container/types';
 import { Logger } from '../../infrastructure/logger/Logger';
 import { Request, Response } from './interfaces';
@@ -42,7 +41,7 @@ export class RequestHandler implements RequestHandler {
       const errors = err.map((e) => ({ message: e?.message }));
       res.code(400).send(errors);
     } else {
-      res.code(400).send(err?.message || 'An unexpected error occurred');
+      res.code(500).send(err?.message || 'An unexpected error occurred');
     }
   }
 }
