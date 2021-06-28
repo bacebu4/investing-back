@@ -8,7 +8,7 @@ import { Crypto } from '../../infrastructure/crypto/Crypto';
 import { TokenService } from '../../infrastructure/token/TokenService';
 import { UsecaseError, UsecaseErrorCode } from '../UsecaseError';
 import { CreateUserDTO } from './CreateUserDTO';
-import { Either, left, right } from '../../lib/Either';
+import { Either, fold, left, right } from '../../lib/Either';
 
 export interface CreateUser extends Usecase {
   invoke(
@@ -58,11 +58,14 @@ export class CreateUserImpl implements CreateUser {
   }
 
   private async checkIfEmailTaken() {
-    const [emailNotTaken] = await this.userRepository.getByEmail(this.email);
+    const res = await this.userRepository.getByEmail(this.email);
 
-    if (!emailNotTaken) {
-      this.errors.push(new UsecaseError(UsecaseErrorCode.USER_ALREADY_EXISTS));
-    }
+    fold(
+      res,
+      () => {},
+      () =>
+        this.errors.push(new UsecaseError(UsecaseErrorCode.USER_ALREADY_EXISTS))
+    );
   }
 
   private validatePassword() {

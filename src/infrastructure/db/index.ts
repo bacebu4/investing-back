@@ -5,11 +5,12 @@ import { UserEntity } from './entities/UserEntity';
 import { User } from '../../domain/User';
 import { SymbolEntity } from './entities/SymbolEntity';
 import { DatabaseError, DatabaseErrorCode } from './DatabaseError';
+import { Either, left, right } from '../../lib/Either';
 
 export interface Database {
   initialize(): void;
   saveUser(user: User): void;
-  getByEmail(email: string): Promise<[DatabaseError | null, UserEntity | null]>;
+  getByEmail(email: string): Promise<Either<DatabaseError, UserEntity>>;
 }
 
 @injectable()
@@ -48,20 +49,18 @@ export class DatabaseImpl implements Database {
     await userRepo.save(userToSave);
   }
 
-  public async getByEmail(
-    email: string
-  ): Promise<[DatabaseError | null, UserEntity | null]> {
+  public async getByEmail(email: string) {
     try {
       const userRepo = this.establishedConnection.getRepository(UserEntity);
       const user = await userRepo.findOne({ email });
 
       if (!user) {
-        return [new DatabaseError(DatabaseErrorCode.NOT_FOUND), null];
+        return left(new DatabaseError(DatabaseErrorCode.NOT_FOUND));
       }
 
-      return [null, user];
+      return right(user);
     } catch (error) {
-      return [new DatabaseError(DatabaseErrorCode.UNEXPECTED_DB_ERROR), null];
+      return left(new DatabaseError(DatabaseErrorCode.UNEXPECTED_DB_ERROR));
     }
   }
 }
