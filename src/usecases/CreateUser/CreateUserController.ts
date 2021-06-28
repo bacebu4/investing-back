@@ -21,8 +21,7 @@ export class CreateUserController extends BaseController {
     super();
   }
 
-  async executeImpl(req: Request): Promise<ControllerResponse> {
-    const dto: CreateUserDTO = req.body as CreateUserDTO;
+  async executeImpl({ body: dto }: { body: CreateUserDTO }) {
     this.useCase = this.createUserFactory();
 
     const res = await this.useCase.invoke(dto);
