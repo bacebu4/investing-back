@@ -21,9 +21,13 @@ export interface ControllerResponse {
   data: any;
 }
 
+interface IBaseController {
+  executeImpl(req: Request): Promise<ControllerResponse>;
+}
+
 @injectable()
-export class BaseController {
-  protected executeImpl(req: Request): Promise<ControllerResponse> {
+export class BaseController implements IBaseController {
+  public executeImpl(req: Request): Promise<ControllerResponse> {
     throw new Error('`executeImpl` is not implemented');
   }
 
