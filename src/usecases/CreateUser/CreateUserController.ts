@@ -32,7 +32,7 @@ export class CreateUserController extends BaseController {
       (e) => {
         return {
           status: ControllerStatus.clientError,
-          data: e.map((e) => ({ message: this.formatError(e) })),
+          data: e.map((e) => this.formatError(e)),
         };
       },
       (token) => {
