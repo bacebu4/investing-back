@@ -1,5 +1,3 @@
-import { inject, injectable } from 'inversify';
-import { TYPES } from '../../infrastructure/container/types';
 import { BaseControllerImpl } from '../../ports/http/BaseController';
 import {
   ControllerResponse,
@@ -8,14 +6,10 @@ import {
 import { CreateUserDTO } from './CreateUserDTO';
 import { CreateUser } from './CreateUserUsecase';
 
-@injectable()
 export class CreateUserControllerImpl extends BaseControllerImpl {
   private useCase: CreateUser;
 
-  constructor(
-    @inject(TYPES.FactoryCreateUser)
-    private createUserFactory: () => CreateUser
-  ) {
+  constructor(private createUserFactory: () => CreateUser) {
     super();
   }
 

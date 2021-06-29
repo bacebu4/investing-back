@@ -1,5 +1,3 @@
-import 'reflect-metadata';
-import { TYPES } from '../../src/infrastructure/container/types';
 import { CreateUserImpl } from '../../src/usecases/CreateUser/CreateUserUsecase';
 import { Currency } from '../../src/domain/User';
 import { setup, SetupUsecaseData } from '../../test/usecases/setup';
@@ -20,12 +18,11 @@ describe('CreateUser', () => {
   beforeAll(() => {
     const s = setup();
 
-    s.fakeContainer.bind(TYPES.CreateUser).to(CreateUserImpl);
     setupData = s;
   });
 
   beforeEach(() => {
-    createUser = setupData.fakeContainer.get<CreateUserImpl>(TYPES.CreateUser);
+    createUser = setupData.createUserFactory();
     setupData.mockGetByEmailLeft.mockReturnValue({});
     setupData.mockGetByEmailRight(null);
   });

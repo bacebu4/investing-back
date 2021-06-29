@@ -1,4 +1,3 @@
-import { injectable } from 'inversify';
 import pino from 'pino';
 import { AsyncLocalStorage } from 'async_hooks';
 import { Request } from '../../ports/http/interfaces';
@@ -12,7 +11,6 @@ export interface Logger {
 
 const LOGGER_KEY = 'logger';
 
-@injectable()
 export class LoggerImpl implements Logger {
   protected logger: pino.Logger;
   private asyncLocalStorage: AsyncLocalStorage<

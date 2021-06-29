@@ -1,11 +1,15 @@
-import { Container, injectable } from 'inversify';
 import { User } from '../../src/domain/User';
-import { TYPES } from '../../src/infrastructure/container/types';
+import { Crypto } from '../../src/infrastructure/crypto/Crypto';
+import { UserRepository } from '../../src/infrastructure/repositories/UserRepository';
+import {
+  Token,
+  TokenService,
+} from '../../src/infrastructure/token/TokenService';
 import { UUID } from '../../src/infrastructure/uuid/UUID';
+import { CreateUserImpl } from '../../src/usecases/CreateUser/CreateUserUsecase';
 import { fake } from './fake';
 
 const mockUUIDGenerate = jest.fn();
-@injectable()
 class UUIDFake implements UUID {
   generate() {
     mockUUIDGenerate();
@@ -14,11 +18,14 @@ class UUIDFake implements UUID {
 }
 
 const mockCryptoGenerateHash = jest.fn();
-@injectable()
-class CryptoFake {
+class CryptoFake implements Crypto {
   generateHash() {
     mockCryptoGenerateHash();
     return Promise.resolve(fake.hash);
+  }
+
+  compareValueWithHash(value: string, hash: string) {
+    return Promise.resolve(true);
   }
 }
 
@@ -26,35 +33,39 @@ const mockSave = jest.fn();
 const mockGetByEmail = jest.fn();
 const mockGetByEmailLeft = jest.fn();
 const mockGetByEmailRight = jest.fn();
-@injectable()
-class UserRepoFake {
+class UserRepoFake implements UserRepository {
   save(user: User) {
     mockSave(user);
   }
 
-  getByEmail(email: string) {
+  getByEmail(email: string): any {
     mockGetByEmail(email);
     return [mockGetByEmailLeft(), mockGetByEmailRight()];
   }
 }
 
 const mockSignWithUserId = jest.fn();
-@injectable()
-class AuthFake {
+class AuthFake implements TokenService {
   signWithUserId(id: string) {
     mockSignWithUserId(id);
     return { value: fake.uuid };
   }
+
+  verifyAndGetUserId(token: Token) {
+    return '123' as any;
+  }
 }
 
-const fakeContainer = new Container();
-fakeContainer.bind(TYPES.UUID).to(UUIDFake);
-fakeContainer.bind(TYPES.Crypto).to(CryptoFake);
-fakeContainer.bind(TYPES.UserRepository).to(UserRepoFake);
-fakeContainer.bind(TYPES.TokenService).to(AuthFake);
+const createUserFactory = () =>
+  new CreateUserImpl(
+    new UserRepoFake(),
+    new UUIDFake(),
+    new CryptoFake(),
+    new AuthFake()
+  );
 
 export type SetupUsecaseData = {
-  fakeContainer: Container;
+  createUserFactory: () => CreateUserImpl;
   mockSave: jest.Mock<any, any>;
   mockGetByEmail: jest.Mock<any, any>;
   mockGetByEmailLeft: jest.Mock<any, any>;
@@ -66,7 +77,7 @@ export type SetupUsecaseData = {
 
 export function setup(): SetupUsecaseData {
   return {
-    fakeContainer,
+    createUserFactory,
     mockSave,
     mockGetByEmail,
     mockGetByEmailLeft,

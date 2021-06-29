@@ -1,4 +1,3 @@
-import { injectable } from 'inversify';
 import { Connection, createConnection } from 'typeorm';
 import { TickerEntity } from './entities/TickerEntity';
 import { UserEntity } from './entities/UserEntity';
@@ -13,7 +12,6 @@ export interface Database {
   getByEmail(email: string): Promise<Either<DatabaseError, UserEntity>>;
 }
 
-@injectable()
 export class DatabaseImpl implements Database {
   private connection: Connection;
 

@@ -1,5 +1,3 @@
-import { inject, injectable } from 'inversify';
-import { TYPES } from '../../infrastructure/container/types';
 import { Request, Response } from './interfaces';
 import { Currency } from '../../domain/User';
 import { BaseController } from './BaseController';
@@ -12,12 +10,8 @@ export interface Routes {
   }>;
 }
 
-@injectable()
 export class RoutesImpl implements Routes {
-  public constructor(
-    @inject(TYPES.CreateUserController)
-    private createUserController: BaseController
-  ) {}
+  public constructor(private createUserController: BaseController) {}
 
   get list() {
     return [

@@ -1,6 +1,4 @@
-import { inject, injectable } from 'inversify';
 import { UserRepository } from '../../infrastructure/repositories/UserRepository';
-import { TYPES } from '../../infrastructure/container/types';
 import { Usecase } from '../interface';
 import { UUID } from '../../infrastructure/uuid/UUID';
 import { Currency, User } from '../../domain/User';
@@ -14,7 +12,6 @@ export interface CreateUser extends Usecase {
   invoke(payload: CreateUserDTO): Promise<Either<UsecaseError[], string>>;
 }
 
-@injectable()
 export class CreateUserImpl implements CreateUser {
   private email: string;
   private password: string;
@@ -22,10 +19,10 @@ export class CreateUserImpl implements CreateUser {
   private errors: UsecaseError[] = [];
 
   public constructor(
-    @inject(TYPES.UserRepository) private userRepository: UserRepository,
-    @inject(TYPES.UUID) private uuid: UUID,
-    @inject(TYPES.Crypto) private crypto: Crypto,
-    @inject(TYPES.TokenService) private tokenService: TokenService
+    private userRepository: UserRepository,
+    private uuid: UUID,
+    private crypto: Crypto,
+    private tokenService: TokenService
   ) {}
 
   public async invoke({

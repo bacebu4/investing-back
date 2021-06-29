@@ -1,10 +1,16 @@
 import { Portfolio } from './src/domain/Portfolio';
 import { PortfolioOptimizer } from './src/domain/PortfolioOptimizer';
 import { Ticker } from './src/domain/Ticker';
-import { container } from './src/infrastructure/container/config';
-import { TYPES } from './src/infrastructure/container/types';
+import { CryptoImpl } from './src/infrastructure/crypto/Crypto';
 import { DatabaseImpl } from './src/infrastructure/db';
+import { LoggerImpl } from './src/infrastructure/logger/Logger';
+import { UserRepositoryImpl } from './src/infrastructure/repositories/UserRepository';
+import { TokenServiceImpl } from './src/infrastructure/token/TokenService';
+import { UUIDImpl } from './src/infrastructure/uuid/UUID';
 import { ServerImpl } from './src/infrastructure/webserver/fastify';
+import { RoutesImpl } from './src/ports/http/Routes';
+import { CreateUserControllerImpl } from './src/usecases/CreateUser/CreateUserController';
+import { CreateUserImpl } from './src/usecases/CreateUser/CreateUserUsecase';
 
 const ticker1 = new Ticker({
   price: 10,
@@ -35,10 +41,21 @@ const portfolioShouldBe = new PortfolioOptimizer(portfolio, 1000);
 portfolioShouldBe.optimize();
 console.log(portfolio.totalPrice);
 console.log(portfolioShouldBe.portfolio.totalPrice);
-const server = container.get<ServerImpl>(TYPES.Server);
-const db = container.get<DatabaseImpl>(TYPES.Database);
+
+const logger = new LoggerImpl();
+const db = new DatabaseImpl();
+
+const userRepo = new UserRepositoryImpl(logger, db);
+const uuid = new UUIDImpl();
+const crypto = new CryptoImpl();
+const tokenService = new TokenServiceImpl();
+
+const createUserFactory = () =>
+  new CreateUserImpl(userRepo, uuid, crypto, tokenService);
+
+const createUserController = new CreateUserControllerImpl(createUserFactory);
+const routes = new RoutesImpl(createUserController);
+const server = new ServerImpl(routes);
+
 server.start();
 db.initialize();
-
-// const getUser = container.get<GetUser>(TYPES.GetUser);
-// console.log(getUser.get('123').id);

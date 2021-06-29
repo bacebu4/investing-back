@@ -1,4 +1,3 @@
-import { injectable } from 'inversify';
 import {
   ControllerResponse,
   ControllerStatus,
@@ -10,7 +9,6 @@ export interface BaseController {
   execute(req: Request, res: Response): Promise<void>;
 }
 
-@injectable()
 export abstract class BaseControllerImpl implements BaseController {
   protected abstract executeImpl(req: Request): Promise<ControllerResponse>;
 

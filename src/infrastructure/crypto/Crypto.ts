@@ -1,12 +1,10 @@
 import bcrypt from 'bcrypt';
-import { injectable } from 'inversify';
 
 export interface Crypto {
   generateHash(value: string): Promise<string>;
   compareValueWithHash(value: string, hash: string): Promise<boolean>;
 }
 
-@injectable()
 export class CryptoImpl implements Crypto {
   public async generateHash(value: string) {
     const saltRounds = 10;

@@ -1,8 +1,7 @@
-import { injectable } from 'inversify';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { User } from '../../domain/User';
 
-class Token {
+export class Token {
   public value: string;
 
   constructor(token: string) {
@@ -15,7 +14,6 @@ export interface TokenService {
   verifyAndGetUserId(token: Token): Pick<User, 'id'>;
 }
 
-@injectable()
 export class TokenServiceImpl implements TokenService {
   private secret: string = '123';
 
