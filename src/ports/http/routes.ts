@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { TYPES } from '../../infrastructure/container/types';
 import { Request, Response } from './interfaces';
 import { Currency } from '../../domain/User';
-import { CreateUserController } from '../../usecases/CreateUser/CreateUserController';
+import { BaseController } from './BaseController';
 
 export interface Routes {
   list: Array<{
@@ -16,7 +16,7 @@ export interface Routes {
 export class RoutesImpl implements Routes {
   public constructor(
     @inject(TYPES.CreateUserController)
-    private createUserController: CreateUserController
+    private createUserController: BaseController
   ) {}
 
   get list() {

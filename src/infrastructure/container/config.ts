@@ -19,7 +19,8 @@ import { Logger, LoggerImpl } from '../logger/Logger';
 import { UUID, UUIDImpl } from '../uuid/UUID';
 import { Database, DatabaseImpl } from '../db';
 import { CryptoImpl, Crypto } from '../crypto/Crypto';
-import { CreateUserController } from '../../usecases/CreateUser/CreateUserController';
+import { CreateUserControllerImpl } from '../../usecases/CreateUser/CreateUserController';
+import { BaseController } from '../../ports/http/BaseController';
 
 const container = new Container();
 container.bind<Database>(TYPES.Database).to(DatabaseImpl).inSingletonScope();
@@ -45,8 +46,8 @@ container
   });
 
 container
-  .bind<CreateUserController>(TYPES.CreateUserController)
-  .to(CreateUserController)
+  .bind<BaseController>(TYPES.CreateUserController)
+  .to(CreateUserControllerImpl)
   .inSingletonScope();
 
 container.bind<LoginUser>(TYPES.LoginUser).to(LoginUserImpl).inSingletonScope();

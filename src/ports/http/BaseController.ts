@@ -6,8 +6,12 @@ import {
   Request,
 } from './interfaces';
 
+export interface BaseController {
+  execute(req: Request, res: Response): Promise<void>;
+}
+
 @injectable()
-export abstract class BaseController {
+export abstract class BaseControllerImpl implements BaseController {
   protected abstract executeImpl(req: Request): Promise<ControllerResponse>;
 
   public async execute(req: Request, res: Response): Promise<void> {

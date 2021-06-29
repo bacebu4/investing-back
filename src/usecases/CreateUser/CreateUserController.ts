@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../../infrastructure/container/types';
-import { BaseController } from '../../ports/http/BaseController';
+import { BaseControllerImpl } from '../../ports/http/BaseController';
 import {
   ControllerResponse,
   ControllerStatus,
@@ -9,7 +9,7 @@ import { CreateUserDTO } from './CreateUserDTO';
 import { CreateUser } from './CreateUserUsecase';
 
 @injectable()
-export class CreateUserController extends BaseController {
+export class CreateUserControllerImpl extends BaseControllerImpl {
   private useCase: CreateUser;
 
   constructor(
