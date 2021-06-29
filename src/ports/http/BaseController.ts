@@ -15,6 +15,7 @@ export enum ControllerStatus {
   clientError = 'clientError',
   ok = 'ok',
   failed = 'failed',
+  created = 'created',
 }
 export interface ControllerResponse {
   status: ControllerStatus;
@@ -48,8 +49,8 @@ export class BaseController implements IBaseController {
     return res.code(200).send(data);
   }
 
-  private created(res: Response) {
-    return res.code(201).send({});
+  private created(res: Response, data: any = {}) {
+    return res.code(201).send(data);
   }
 
   private clientError(res: Response, errors: any) {

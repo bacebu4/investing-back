@@ -31,7 +31,7 @@ export class CreateUserController extends BaseController {
     }
 
     return {
-      status: ControllerStatus.ok,
+      status: ControllerStatus.created,
       data: token,
     };
   }
