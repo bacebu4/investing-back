@@ -11,9 +11,7 @@ import { CreateUserDTO } from './CreateUserDTO';
 import { Either, left, right } from '../../lib/Either';
 
 export interface CreateUser extends Usecase {
-  invoke(
-    payload: CreateUserDTO
-  ): Promise<[UsecaseError[], null] | [null, string]>;
+  invoke(payload: CreateUserDTO): Promise<Either<UsecaseError[], string>>;
 }
 
 @injectable()
