@@ -71,6 +71,7 @@ describe('CreateUser', () => {
 
   it('validate email on whether it is already taken', async () => {
     setupData.mockGetByEmailLeft.mockReturnValue(null);
+    setupData.mockGetByEmailRight.mockReturnValue({});
 
     const [err, token] = await createUser.invoke(VALID_INPUT);
 
