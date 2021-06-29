@@ -1,36 +1,14 @@
 import { injectable } from 'inversify';
-
-export interface Request {
-  body: any;
-  params: any;
-  headers: any;
-}
-
-export interface Response {
-  code(codeNumber: number): Response;
-  send(payload: any): void;
-}
-
-export enum ControllerStatus {
-  clientError = 'clientError',
-  ok = 'ok',
-  failed = 'failed',
-  created = 'created',
-}
-export interface ControllerResponse {
-  status: ControllerStatus;
-  data: any;
-}
-
-interface IBaseController {
-  executeImpl(req: Request): Promise<ControllerResponse>;
-}
+import {
+  ControllerResponse,
+  ControllerStatus,
+  Response,
+  Request,
+} from './interfaces';
 
 @injectable()
-export class BaseController implements IBaseController {
-  public executeImpl(req: Request): Promise<ControllerResponse> {
-    throw new Error('`executeImpl` is not implemented');
-  }
+export abstract class BaseController {
+  protected abstract executeImpl(req: Request): Promise<ControllerResponse>;
 
   public async execute(req: Request, res: Response): Promise<void> {
     try {
@@ -45,37 +23,37 @@ export class BaseController implements IBaseController {
     return { message: e?.message };
   }
 
-  private ok(res: Response, data: any = {}) {
+  private [ControllerStatus.ok](res: Response, data: any = {}) {
     return res.code(200).send(data);
   }
 
-  private created(res: Response, data: any = {}) {
+  private [ControllerStatus.created](res: Response, data: any = {}) {
     return res.code(201).send(data);
   }
 
-  private clientError(res: Response, errors: any) {
+  private [ControllerStatus.clientError](res: Response, errors: any) {
     return res.code(400).send(errors);
   }
 
-  private fail(res: Response, error: any) {
+  private [ControllerStatus.fail](res: Response, error: any) {
     return res.code(500).send({
       message: 'An unexpected error occurred',
     });
   }
 
-  private unauthorized(res: Response) {
+  private [ControllerStatus.unauthorized](res: Response) {
     return res.code(401).send({ message: 'Unauthorized' });
   }
 
-  private forbidden(res: Response) {
+  private [ControllerStatus.forbidden](res: Response) {
     return res.code(403).send({ message: 'Forbidden' });
   }
 
-  private notFound(res: Response) {
+  private [ControllerStatus.notFound](res: Response) {
     return res.code(404).send({ message: 'Not found' });
   }
 
-  private conflict(res: Response) {
+  private [ControllerStatus.conflict](res: Response) {
     return res.code(404).send({ message: 'Conflict' });
   }
 }

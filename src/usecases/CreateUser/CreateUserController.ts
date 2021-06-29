@@ -1,9 +1,10 @@
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../../infrastructure/container/types';
+import { BaseController } from '../../ports/http/BaseController';
 import {
-  BaseController,
+  ControllerResponse,
   ControllerStatus,
-} from '../../ports/http/BaseController';
+} from '../../ports/http/interfaces';
 import { CreateUserDTO } from './CreateUserDTO';
 import { CreateUser } from './CreateUserUsecase';
 
@@ -18,7 +19,11 @@ export class CreateUserController extends BaseController {
     super();
   }
 
-  async executeImpl({ body: dto }: { body: CreateUserDTO }) {
+  protected async executeImpl({
+    body: dto,
+  }: {
+    body: CreateUserDTO;
+  }): Promise<ControllerResponse> {
     this.useCase = this.createUserFactory();
 
     const [error, token] = await this.useCase.invoke(dto);
