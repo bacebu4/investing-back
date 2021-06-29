@@ -57,5 +57,8 @@ const createUserController = new CreateUserControllerImpl(createUserFactory);
 const routes = new RoutesImpl(createUserController);
 const server = new ServerImpl(routes);
 
-server.start();
-db.initialize();
+async function bootstrap() {
+  await db.initialize();
+  server.start();
+}
+bootstrap();
