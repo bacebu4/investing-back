@@ -1,8 +1,8 @@
-import { CreateUserImpl } from '../../src/usecases/CreateUser/CreateUserUsecase';
-import { Currency } from '../../src/domain/User';
-import { setup, SetupUsecaseData } from '../../test/usecases/setup';
-import { fake } from '../../test/usecases/fake';
-import { CreateUserError } from '../../src/usecases/CreateUser/CreateUserErrors';
+import { fake } from '../../../test/usecases/fake';
+import { setup, SetupUsecaseData } from '../../../test/usecases/setup';
+import { Currency } from '../../domain/User';
+import { CreateUserError } from './CreateUserErrors';
+import { CreateUserImpl } from './CreateUserUsecase';
 
 const VALID_INPUT = {
   email: 'FAKE_MAIL',

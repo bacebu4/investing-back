@@ -1,7 +1,7 @@
-import { setup, SetupUsecaseData } from '../../test/usecases/setup';
-import { fake } from '../../test/usecases/fake';
-import { LoginUserImpl } from '../../src/usecases/LoginUser/LoginUserUsecase';
-import { LoginUserError } from '../../src/usecases/LoginUser/LoginUserErrors';
+import { fake } from '../../../test/usecases/fake';
+import { SetupUsecaseData, setup } from '../../../test/usecases/setup';
+import { LoginUserError } from './LoginUserErrors';
+import { LoginUserImpl } from './LoginUserUsecase';
 
 const INPUT = {
   email: 'FAKE_MAIL',
