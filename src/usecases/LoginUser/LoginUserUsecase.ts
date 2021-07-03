@@ -5,6 +5,7 @@ import { TokenService } from '../../infrastructure/token/TokenService';
 import { UsecaseError, UsecaseErrorCode } from '../UsecaseError';
 import { Either, left, right } from '../../lib/Either';
 import { LoginUserDTO } from './LoginUserDTO';
+import { User } from '../../domain/User';
 
 export interface LoginUser extends Usecase {
   invoke(payload: LoginUserDTO): Promise<Either<UsecaseError[], string>>;
@@ -28,26 +29,13 @@ export class LoginUserImpl implements LoginUser {
     this.email = email;
     this.password = password;
 
-    const [error, user] = await this.userRepository.getByEmail(this.email);
-    if (error) {
-      this.errors.push(
-        new UsecaseError(UsecaseErrorCode.WRONG_EMAIL_OR_PASSWORD)
-      );
-    }
+    const user = await this.getUser();
 
     if (this.hasErrors()) {
       return left(this.errors);
     }
 
-    const passwordComparison = this.crypto.compareValueWithHash(
-      this.password,
-      user.hashedPassword
-    );
-    if (!passwordComparison) {
-      this.errors.push(
-        new UsecaseError(UsecaseErrorCode.WRONG_EMAIL_OR_PASSWORD)
-      );
-    }
+    this.validatePassword(user);
 
     if (this.hasErrors()) {
       return left(this.errors);
@@ -59,5 +47,30 @@ export class LoginUserImpl implements LoginUser {
 
   private hasErrors() {
     return this.errors.length;
+  }
+
+  private async getUser() {
+    const [error, user] = await this.userRepository.getByEmail(this.email);
+
+    if (error) {
+      this.errors.push(
+        new UsecaseError(UsecaseErrorCode.WRONG_EMAIL_OR_PASSWORD)
+      );
+    }
+
+    return user;
+  }
+
+  private validatePassword(user: User) {
+    const validPassword = this.crypto.compareValueWithHash(
+      this.password,
+      user.hashedPassword
+    );
+
+    if (!validPassword) {
+      this.errors.push(
+        new UsecaseError(UsecaseErrorCode.WRONG_EMAIL_OR_PASSWORD)
+      );
+    }
   }
 }
