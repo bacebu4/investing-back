@@ -20,12 +20,12 @@ export class CreateUserControllerImpl extends BaseControllerImpl {
   }): Promise<ControllerResponse> {
     this.useCase = this.createUserFactory();
 
-    const [error, token] = await this.useCase.invoke(dto);
+    const [errors, token] = await this.useCase.invoke(dto);
 
-    if (error) {
+    if (errors) {
       return {
         status: ControllerStatus.clientError,
-        data: error.map((e) => this.formatError(e)),
+        data: errors.map(this.formatError),
       };
     }
 

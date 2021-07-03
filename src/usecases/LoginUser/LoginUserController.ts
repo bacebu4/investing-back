@@ -25,7 +25,7 @@ export class LoginUserControllerImpl extends BaseControllerImpl {
     if (errors) {
       return {
         status: ControllerStatus.clientError,
-        data: errors.map((e) => this.formatError(e)),
+        data: errors.map(this.formatError),
       };
     }
 
