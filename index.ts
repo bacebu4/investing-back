@@ -12,6 +12,8 @@ import { ServerImpl } from './src/infrastructure/webserver/fastify';
 import { RoutesImpl } from './src/ports/http/Routes';
 import { CreateUserControllerImpl } from './src/usecases/CreateUser/CreateUserController';
 import { CreateUserImpl } from './src/usecases/CreateUser/CreateUserUsecase';
+import { LoginUserControllerImpl } from './src/usecases/LoginUser/LoginUserController';
+import { LoginUserImpl } from './src/usecases/LoginUser/LoginUserUsecase';
 
 const ticker1 = new Ticker({
   price: 10,
@@ -56,8 +58,13 @@ const tokenService = new TokenServiceImpl();
 const createUserFactory = () =>
   new CreateUserImpl(userRepo, uuid, crypto, tokenService);
 
+const loginUserUsecaseLogger = new LabeledLogger(logger, 'LoginUser Usecase');
+const loginUserFactory = () =>
+  new LoginUserImpl(userRepo, crypto, tokenService, loginUserUsecaseLogger);
+
 const createUserController = new CreateUserControllerImpl(createUserFactory);
-const routes = new RoutesImpl(createUserController);
+const loginUserController = new LoginUserControllerImpl(loginUserFactory);
+const routes = new RoutesImpl(createUserController, loginUserController);
 const server = new ServerImpl(routes);
 
 async function bootstrap() {

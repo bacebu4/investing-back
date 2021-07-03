@@ -6,6 +6,7 @@ import { UsecaseError, UsecaseErrorCode } from '../UsecaseError';
 import { Either, left, right } from '../../lib/Either';
 import { LoginUserDTO } from './LoginUserDTO';
 import { User } from '../../domain/User';
+import { Logger } from '../../infrastructure/logger/Logger';
 
 export interface LoginUser extends Usecase {
   invoke(payload: LoginUserDTO): Promise<Either<UsecaseError[], string>>;
@@ -19,7 +20,8 @@ export class LoginUserImpl implements LoginUser {
   public constructor(
     private userRepository: UserRepository,
     private crypto: Crypto,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private logger: Logger
   ) {}
 
   public async invoke({
@@ -35,7 +37,7 @@ export class LoginUserImpl implements LoginUser {
       return left(this.errors);
     }
 
-    this.validatePassword(user);
+    await this.validatePassword(user);
 
     if (this.hasErrors()) {
       return left(this.errors);
@@ -61,8 +63,8 @@ export class LoginUserImpl implements LoginUser {
     return user;
   }
 
-  private validatePassword(user: User) {
-    const validPassword = this.crypto.compareValueWithHash(
+  private async validatePassword(user: User) {
+    const validPassword = await this.crypto.compareValueWithHash(
       this.password,
       user.hashedPassword
     );

@@ -11,7 +11,10 @@ export interface Routes {
 }
 
 export class RoutesImpl implements Routes {
-  public constructor(private createUserController: BaseController) {}
+  public constructor(
+    private createUserController: BaseController,
+    private loginUserController: BaseController
+  ) {}
 
   get list() {
     return [
@@ -41,6 +44,27 @@ export class RoutesImpl implements Routes {
               email: { type: 'string' },
               password: { type: 'string' },
               currency: { type: 'string', enum: Object.values(Currency) },
+            },
+          },
+          response: {
+            200: {
+              type: 'string',
+            },
+          },
+        },
+      },
+      {
+        method: 'POST',
+        path: '/users/login',
+        handler: this.loginUserController.execute.bind(
+          this.loginUserController
+        ),
+        schema: {
+          body: {
+            type: 'object',
+            properties: {
+              email: { type: 'string' },
+              password: { type: 'string' },
             },
           },
           response: {
