@@ -1,5 +1,6 @@
 import { User } from '../../src/domain/User';
 import { Crypto } from '../../src/infrastructure/crypto/Crypto';
+import { Logger } from '../../src/infrastructure/logger/Logger';
 import { UserRepository } from '../../src/infrastructure/repositories/UserRepository';
 import {
   Token,
@@ -9,6 +10,15 @@ import { UUID } from '../../src/infrastructure/uuid/UUID';
 import { CreateUserImpl } from '../../src/usecases/CreateUser/CreateUserUsecase';
 import { LoginUserImpl } from '../../src/usecases/LoginUser/LoginUserUsecase';
 import { fake } from './fake';
+
+class LoggerFake implements Logger {
+  info() {}
+  error() {}
+  child() {
+    return 1 as any;
+  }
+  decorateRequestWithTraceId() {}
+}
 
 const mockUUIDGenerate = jest.fn();
 class UUIDFake implements UUID {
@@ -67,7 +77,12 @@ const createUserFactory = () =>
   );
 
 const loginUserFactory = () =>
-  new LoginUserImpl(new UserRepoFake(), new CryptoFake(), new AuthFake());
+  new LoginUserImpl(
+    new UserRepoFake(),
+    new CryptoFake(),
+    new AuthFake(),
+    new LoggerFake()
+  );
 
 export type SetupUsecaseData = {
   createUserFactory: () => CreateUserImpl;
