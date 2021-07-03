@@ -50,7 +50,7 @@ const mockSignWithUserId = jest.fn();
 class AuthFake implements TokenService {
   signWithUserId(id: string) {
     mockSignWithUserId(id);
-    return { value: fake.uuid };
+    return { value: fake.token };
   }
 
   verifyAndGetUserId(token: Token) {

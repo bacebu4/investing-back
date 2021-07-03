@@ -62,7 +62,7 @@ describe('CreateUser', () => {
   it('returns token with userId', async () => {
     const [err, token] = await createUser.invoke(VALID_INPUT);
 
-    expect(token).toEqual(fake.uuid);
+    expect(token).toEqual(fake.token);
     expect(err).toBe(null);
   });
 
