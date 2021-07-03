@@ -3,13 +3,13 @@ import { Usecase } from '../interface';
 import { UUID } from '../../infrastructure/uuid/UUID';
 import { Currency, User } from '../../domain/User';
 import { Crypto } from '../../infrastructure/crypto/Crypto';
-import { TokenService } from '../../infrastructure/token/TokenService';
+import { Token, TokenService } from '../../infrastructure/token/TokenService';
 import { CreateUserDTO } from './CreateUserDTO';
 import { Either, left, right } from '../../lib/Either';
 import { CreateUserError, CreateUserErrorCode } from './CreateUserErrors';
 
 export interface CreateUser extends Usecase {
-  invoke(payload: CreateUserDTO): Promise<Either<CreateUserError[], string>>;
+  invoke(payload: CreateUserDTO): Promise<Either<CreateUserError[], Token>>;
 }
 
 export class CreateUserImpl implements CreateUser {
@@ -25,11 +25,7 @@ export class CreateUserImpl implements CreateUser {
     private tokenService: TokenService
   ) {}
 
-  public async invoke({
-    email,
-    password,
-    currency,
-  }: CreateUserDTO): Promise<Either<CreateUserError[], string>> {
+  public async invoke({ email, password, currency }: CreateUserDTO) {
     this.email = email;
     this.password = password;
     this.currency = currency;
@@ -44,7 +40,7 @@ export class CreateUserImpl implements CreateUser {
     await this.userRepository.save(user);
 
     const token = this.tokenService.signWithUserId(user.id);
-    return right(token.value);
+    return right(token);
   }
 
   private async validation() {

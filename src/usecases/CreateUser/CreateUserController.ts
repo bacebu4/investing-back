@@ -31,7 +31,7 @@ export class CreateUserControllerImpl extends BaseControllerImpl {
 
     return {
       status: ControllerStatus.created,
-      data: token,
+      data: token.value,
     };
   }
 }

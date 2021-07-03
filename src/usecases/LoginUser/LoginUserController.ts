@@ -31,7 +31,7 @@ export class LoginUserControllerImpl extends BaseControllerImpl {
 
     return {
       status: ControllerStatus.ok,
-      data: token,
+      data: token.value,
     };
   }
 }

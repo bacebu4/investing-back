@@ -1,7 +1,7 @@
 import { UserRepository } from '../../infrastructure/repositories/UserRepository';
 import { Usecase } from '../interface';
 import { Crypto } from '../../infrastructure/crypto/Crypto';
-import { TokenService } from '../../infrastructure/token/TokenService';
+import { Token, TokenService } from '../../infrastructure/token/TokenService';
 import { Either, left, right } from '../../lib/Either';
 import { LoginUserDTO } from './LoginUserDTO';
 import { User } from '../../domain/User';
@@ -9,7 +9,7 @@ import { Logger } from '../../infrastructure/logger/Logger';
 import { LoginUserError, LoginUserErrorCode } from './LoginUserErrors';
 
 export interface LoginUser extends Usecase {
-  invoke(payload: LoginUserDTO): Promise<Either<LoginUserError[], string>>;
+  invoke(payload: LoginUserDTO): Promise<Either<LoginUserError[], Token>>;
 }
 
 export class LoginUserImpl implements LoginUser {
@@ -24,10 +24,7 @@ export class LoginUserImpl implements LoginUser {
     private logger: Logger
   ) {}
 
-  public async invoke({
-    email,
-    password,
-  }: LoginUserDTO): Promise<Either<LoginUserError[], string>> {
+  public async invoke({ email, password }: LoginUserDTO) {
     this.email = email;
     this.password = password;
 
@@ -44,7 +41,7 @@ export class LoginUserImpl implements LoginUser {
     }
 
     const token = this.tokenService.signWithUserId(user.id);
-    return right(token.value);
+    return right(token);
   }
 
   private hasErrors() {

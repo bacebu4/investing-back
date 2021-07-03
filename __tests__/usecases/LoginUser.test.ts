@@ -62,6 +62,6 @@ describe('LoginUser', () => {
     const [error, token] = await loginUser.invoke(INPUT);
 
     expect(error).toBe(null);
-    expect(token).toBe(fake.token);
+    expect(token.value).toBe(fake.token);
   });
 });
