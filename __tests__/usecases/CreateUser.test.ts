@@ -2,7 +2,7 @@ import { CreateUserImpl } from '../../src/usecases/CreateUser/CreateUserUsecase'
 import { Currency } from '../../src/domain/User';
 import { setup, SetupUsecaseData } from '../../test/usecases/setup';
 import { fake } from '../../test/usecases/fake';
-import { UsecaseError } from '../../src/usecases/UsecaseError';
+import { CreateUserError } from '../../src/usecases/CreateUser/CreateUserErrors';
 
 const VALID_INPUT = {
   email: 'FAKE_MAIL',
@@ -72,7 +72,7 @@ describe('CreateUser', () => {
 
     const [err, token] = await createUser.invoke(VALID_INPUT);
 
-    expect(err[0]).toBeInstanceOf(UsecaseError);
+    expect(err[0]).toBeInstanceOf(CreateUserError);
     expect(token).toBe(null);
   });
 
@@ -82,7 +82,7 @@ describe('CreateUser', () => {
       password: INVALID_PASSWORD,
     });
 
-    expect(err[0]).toBeInstanceOf(UsecaseError);
+    expect(err[0]).toBeInstanceOf(CreateUserError);
     expect(token).toBe(null);
   });
 });

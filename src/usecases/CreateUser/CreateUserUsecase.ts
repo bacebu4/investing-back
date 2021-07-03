@@ -4,19 +4,19 @@ import { UUID } from '../../infrastructure/uuid/UUID';
 import { Currency, User } from '../../domain/User';
 import { Crypto } from '../../infrastructure/crypto/Crypto';
 import { TokenService } from '../../infrastructure/token/TokenService';
-import { UsecaseError, UsecaseErrorCode } from '../UsecaseError';
 import { CreateUserDTO } from './CreateUserDTO';
 import { Either, left, right } from '../../lib/Either';
+import { CreateUserError, CreateUserErrorCode } from './CreateUserErrors';
 
 export interface CreateUser extends Usecase {
-  invoke(payload: CreateUserDTO): Promise<Either<UsecaseError[], string>>;
+  invoke(payload: CreateUserDTO): Promise<Either<CreateUserError[], string>>;
 }
 
 export class CreateUserImpl implements CreateUser {
   private email: string;
   private password: string;
   private currency: Currency;
-  private errors: UsecaseError[] = [];
+  private errors: CreateUserError[] = [];
 
   public constructor(
     private userRepository: UserRepository,
@@ -29,7 +29,7 @@ export class CreateUserImpl implements CreateUser {
     email,
     password,
     currency,
-  }: CreateUserDTO): Promise<Either<UsecaseError[], string>> {
+  }: CreateUserDTO): Promise<Either<CreateUserError[], string>> {
     this.email = email;
     this.password = password;
     this.currency = currency;
@@ -56,13 +56,15 @@ export class CreateUserImpl implements CreateUser {
     const [, emailTaken] = await this.userRepository.getByEmail(this.email);
 
     if (emailTaken) {
-      this.errors.push(new UsecaseError(UsecaseErrorCode.USER_ALREADY_EXISTS));
+      this.errors.push(
+        new CreateUserError(CreateUserErrorCode.USER_ALREADY_EXISTS)
+      );
     }
   }
 
   private validatePassword() {
     if (this.password.length < 4) {
-      this.errors.push(new UsecaseError(UsecaseErrorCode.WEAK_PASSWORD));
+      this.errors.push(new CreateUserError(CreateUserErrorCode.WEAK_PASSWORD));
     }
   }
 
