@@ -7,6 +7,7 @@ import {
 } from '../../src/infrastructure/token/TokenService';
 import { UUID } from '../../src/infrastructure/uuid/UUID';
 import { CreateUserImpl } from '../../src/usecases/CreateUser/CreateUserUsecase';
+import { LoginUserImpl } from '../../src/usecases/LoginUser/LoginUserUsecase';
 import { fake } from './fake';
 
 const mockUUIDGenerate = jest.fn();
@@ -18,6 +19,7 @@ class UUIDFake implements UUID {
 }
 
 const mockCryptoGenerateHash = jest.fn();
+const mockCompareValueWithHash = jest.fn().mockResolvedValue(true);
 class CryptoFake implements Crypto {
   generateHash() {
     mockCryptoGenerateHash();
@@ -25,7 +27,7 @@ class CryptoFake implements Crypto {
   }
 
   compareValueWithHash(value: string, hash: string) {
-    return Promise.resolve(true);
+    return mockCompareValueWithHash(value, hash);
   }
 }
 
@@ -64,13 +66,18 @@ const createUserFactory = () =>
     new AuthFake()
   );
 
+const loginUserFactory = () =>
+  new LoginUserImpl(new UserRepoFake(), new CryptoFake(), new AuthFake());
+
 export type SetupUsecaseData = {
   createUserFactory: () => CreateUserImpl;
+  loginUserFactory: () => LoginUserImpl;
   mockSave: jest.Mock<any, any>;
   mockGetByEmail: jest.Mock<any, any>;
   mockGetByEmailLeft: jest.Mock<any, any>;
   mockGetByEmailRight: jest.Mock<any, any>;
   mockCryptoGenerateHash: jest.Mock<any, any>;
+  mockCompareValueWithHash: jest.Mock<any, any>;
   mockSignWithUserId: jest.Mock<any, any>;
   mockUUIDGenerate: jest.Mock<any, any>;
 };
@@ -78,11 +85,13 @@ export type SetupUsecaseData = {
 export function setup(): SetupUsecaseData {
   return {
     createUserFactory,
+    loginUserFactory,
     mockSave,
     mockGetByEmail,
     mockGetByEmailLeft,
     mockGetByEmailRight,
     mockCryptoGenerateHash,
+    mockCompareValueWithHash,
     mockSignWithUserId,
     mockUUIDGenerate,
   };
