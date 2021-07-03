@@ -2,20 +2,20 @@ import { UserRepository } from '../../infrastructure/repositories/UserRepository
 import { Usecase } from '../interface';
 import { Crypto } from '../../infrastructure/crypto/Crypto';
 import { TokenService } from '../../infrastructure/token/TokenService';
-import { UsecaseError, UsecaseErrorCode } from '../UsecaseError';
 import { Either, left, right } from '../../lib/Either';
 import { LoginUserDTO } from './LoginUserDTO';
 import { User } from '../../domain/User';
 import { Logger } from '../../infrastructure/logger/Logger';
+import { LoginUserError, LoginUserErrorCode } from './LoginUserErrors';
 
 export interface LoginUser extends Usecase {
-  invoke(payload: LoginUserDTO): Promise<Either<UsecaseError[], string>>;
+  invoke(payload: LoginUserDTO): Promise<Either<LoginUserError[], string>>;
 }
 
 export class LoginUserImpl implements LoginUser {
   private email: string;
   private password: string;
-  private errors: UsecaseError[] = [];
+  private errors: LoginUserError[] = [];
 
   public constructor(
     private userRepository: UserRepository,
@@ -27,7 +27,7 @@ export class LoginUserImpl implements LoginUser {
   public async invoke({
     email,
     password,
-  }: LoginUserDTO): Promise<Either<UsecaseError[], string>> {
+  }: LoginUserDTO): Promise<Either<LoginUserError[], string>> {
     this.email = email;
     this.password = password;
 
@@ -56,7 +56,7 @@ export class LoginUserImpl implements LoginUser {
 
     if (error) {
       this.errors.push(
-        new UsecaseError(UsecaseErrorCode.WRONG_EMAIL_OR_PASSWORD)
+        new LoginUserError(LoginUserErrorCode.WRONG_EMAIL_OR_PASSWORD)
       );
     }
 
@@ -71,7 +71,7 @@ export class LoginUserImpl implements LoginUser {
 
     if (!validPassword) {
       this.errors.push(
-        new UsecaseError(UsecaseErrorCode.WRONG_EMAIL_OR_PASSWORD)
+        new LoginUserError(LoginUserErrorCode.WRONG_EMAIL_OR_PASSWORD)
       );
     }
   }

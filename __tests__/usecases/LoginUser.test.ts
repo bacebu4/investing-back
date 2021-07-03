@@ -1,7 +1,7 @@
 import { setup, SetupUsecaseData } from '../../test/usecases/setup';
 import { fake } from '../../test/usecases/fake';
-import { UsecaseError } from '../../src/usecases/UsecaseError';
 import { LoginUserImpl } from '../../src/usecases/LoginUser/LoginUserUsecase';
+import { LoginUserError } from '../../src/usecases/LoginUser/LoginUserErrors';
 
 const INPUT = {
   email: 'FAKE_MAIL',
@@ -46,7 +46,7 @@ describe('LoginUser', () => {
     const [error] = await loginUser.invoke(INPUT);
 
     expect(error).not.toBe(null);
-    expect(error[0]).toBeInstanceOf(UsecaseError);
+    expect(error[0]).toBeInstanceOf(LoginUserError);
   });
 
   it('fails if passwords not matched', async () => {
@@ -55,7 +55,7 @@ describe('LoginUser', () => {
     const [error] = await loginUser.invoke(INPUT);
 
     expect(error).not.toBe(null);
-    expect(error[0]).toBeInstanceOf(UsecaseError);
+    expect(error[0]).toBeInstanceOf(LoginUserError);
   });
 
   it('succeeds', async () => {
