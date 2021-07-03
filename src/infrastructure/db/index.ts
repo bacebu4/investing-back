@@ -5,6 +5,7 @@ import { User } from '../../domain/User';
 import { SymbolEntity } from './entities/SymbolEntity';
 import { DatabaseError, DatabaseErrorCode } from './DatabaseError';
 import { Either, left, right } from '../../lib/Either';
+import { Logger } from '../logger/Logger';
 
 export interface Database {
   initialize(): void;
@@ -14,6 +15,8 @@ export interface Database {
 
 export class DatabaseImpl implements Database {
   private connection: Connection;
+
+  constructor(private logger: Logger) {}
 
   get establishedConnection() {
     if (this.connection) {
@@ -35,6 +38,8 @@ export class DatabaseImpl implements Database {
       synchronize: true,
       logging: false,
     });
+
+    this.logger.info('Connection established');
   }
 
   public async saveUser(user: User) {

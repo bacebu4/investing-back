@@ -3,6 +3,7 @@ import { PortfolioOptimizer } from './src/domain/PortfolioOptimizer';
 import { Ticker } from './src/domain/Ticker';
 import { CryptoImpl } from './src/infrastructure/crypto/Crypto';
 import { DatabaseImpl } from './src/infrastructure/db';
+import { LabeledLogger } from './src/infrastructure/logger/LabaledLogger';
 import { LoggerImpl } from './src/infrastructure/logger/Logger';
 import { UserRepositoryImpl } from './src/infrastructure/repositories/UserRepository';
 import { TokenServiceImpl } from './src/infrastructure/token/TokenService';
@@ -43,7 +44,9 @@ console.log(portfolio.totalPrice);
 console.log(portfolioShouldBe.portfolio.totalPrice);
 
 const logger = new LoggerImpl();
-const db = new DatabaseImpl();
+
+const dbLogger = new LabeledLogger(logger, 'db');
+const db = new DatabaseImpl(dbLogger);
 
 const userRepo = new UserRepositoryImpl(logger, db);
 const uuid = new UUIDImpl();

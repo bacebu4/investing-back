@@ -19,7 +19,6 @@ export class LoggerImpl implements Logger {
 
   constructor() {
     this.logger = pino({ prettyPrint: true });
-    this.logger.child;
     this.asyncLocalStorage = new AsyncLocalStorage();
   }
 
