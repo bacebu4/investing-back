@@ -1,14 +1,14 @@
 import { Currency } from '../../domain/User';
 import { BaseController } from '../../ports/http/BaseController';
-import { HTTPRoute } from '../../ports/http/interfaces';
+import { HTTPRoute, Route } from '../../ports/http/interfaces';
 
 export class CreateUserHTTPRoute implements HTTPRoute {
   public constructor(private createUserController: BaseController) {}
 
-  get route() {
+  get route(): Route {
     return {
       method: 'POST',
-      path: '/users/create',
+      url: '/users/create',
       handler: this.createUserController.execute.bind(
         this.createUserController
       ),
