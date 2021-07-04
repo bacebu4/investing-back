@@ -1,19 +1,16 @@
 import { BaseControllerImpl } from '../../ports/http/BaseController';
 import { ControllerStatus } from '../../ports/http/interfaces';
-import { LoginUserDTO } from './LoginUserDTO';
 import { LoginUser } from './LoginUserUsecase';
 
 export class LoginUserControllerImpl extends BaseControllerImpl {
-  private useCase: LoginUser;
-
   constructor(private loginUserFactory: () => LoginUser) {
     super();
   }
 
-  protected async executeImpl({ body: dto }: { body: LoginUserDTO }) {
-    this.useCase = this.loginUserFactory();
+  protected async executeImpl({ body: dto }) {
+    const useCase = this.loginUserFactory();
 
-    const [errors, token] = await this.useCase.invoke(dto);
+    const [errors, token] = await useCase.invoke(dto);
 
     if (errors) {
       return {
