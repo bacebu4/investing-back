@@ -1,12 +1,12 @@
 import pino from 'pino';
 import { AsyncLocalStorage } from 'async_hooks';
-import { Request } from '../../ports/http/interfaces';
+import { IncomingMessage } from 'http';
 
 export interface Logger {
   info(message: string): void;
   child(bindings: pino.Bindings): pino.Logger;
   error(obj: object, msg?: string): void;
-  decorateRequestWithTraceId(req: Request, cb: Function): void;
+  decorateRequestWithTraceId(req: IncomingMessage, cb: Function): void;
 }
 
 const LOGGER_KEY = 'logger';
@@ -44,7 +44,7 @@ export class LoggerImpl implements Logger {
     return this.loggerWithTraceIdIfPossible.child(bindings);
   }
 
-  public decorateRequestWithTraceId(req: Request, cb: Function) {
+  public decorateRequestWithTraceId(req: IncomingMessage, cb: Function) {
     this.asyncLocalStorage.run(new Map(), async () => {
       const traceId = req.headers['x-request-id'] || Date.now().toString();
       const childLogger = this.logger.child({

@@ -1,6 +1,6 @@
-import { Request } from '../../ports/http/interfaces';
 import { Logger } from './Logger';
 import pino from 'pino';
+import { IncomingMessage } from 'http';
 
 export class LabeledLogger implements Logger {
   constructor(private logger: Logger, private name: string) {}
@@ -23,7 +23,7 @@ export class LabeledLogger implements Logger {
     return this.logger.child(bindings);
   }
 
-  public decorateRequestWithTraceId(req: Request, cb: Function) {
+  public decorateRequestWithTraceId(req: IncomingMessage, cb: Function) {
     this.logger.decorateRequestWithTraceId(req, cb);
   }
 }
