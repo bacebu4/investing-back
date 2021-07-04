@@ -1,4 +1,4 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyReply, FastifyRequest, HTTPMethods } from 'fastify';
 
 export enum ControllerStatus {
   clientError = 'clientError',
@@ -13,13 +13,16 @@ export enum ControllerStatus {
 
 export interface ControllerResponse {
   status: ControllerStatus;
-  data: any;
+  data: unknown;
 }
 
+export type Route = {
+  method: HTTPMethods;
+  url: string;
+  handler: (req: FastifyRequest, res: FastifyReply) => void;
+  schema: unknown;
+};
+
 export interface HTTPRoute {
-  route: {
-    method: string;
-    path: string;
-    handler: (req: FastifyRequest, res: FastifyReply) => void;
-  };
+  route: Route;
 }

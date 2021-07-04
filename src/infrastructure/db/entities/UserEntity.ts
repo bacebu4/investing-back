@@ -16,6 +16,6 @@ export class UserEntity {
   @Column()
   currency: Currency;
 
-  @OneToMany((type) => TickerEntity, (ticker) => ticker.userId)
+  @OneToMany(() => TickerEntity, (ticker) => ticker.userId)
   tickers: TickerEntity[];
 }

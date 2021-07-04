@@ -12,7 +12,7 @@ export class ServerImpl implements Server {
   constructor(routes: HTTPRoute[]) {
     this.server = fastify({ logger: true });
     routes.forEach(({ route }) => {
-      this.server.route(route as any);
+      this.server.route(route);
     });
   }
 

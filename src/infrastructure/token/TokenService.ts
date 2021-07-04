@@ -15,7 +15,7 @@ export interface TokenService {
 }
 
 export class TokenServiceImpl implements TokenService {
-  private secret: string = '123';
+  private secret = '123';
 
   public signWithUserId(userId: string) {
     const token = new Token(jwt.sign({ userId }, this.secret));

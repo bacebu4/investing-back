@@ -1,5 +1,3 @@
-import { Portfolio } from './Portfolio';
-
 export enum Currency {
   Rub = 'RUB',
   Usd = 'USD',

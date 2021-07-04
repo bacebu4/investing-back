@@ -1,13 +1,13 @@
 import { BaseController } from '../../ports/http/BaseController';
-import { HTTPRoute } from '../../ports/http/interfaces';
+import { HTTPRoute, Route } from '../../ports/http/interfaces';
 
 export class LoginUserHTTPRoute implements HTTPRoute {
   public constructor(private loginUserController: BaseController) {}
 
-  get route() {
+  get route(): Route {
     return {
       method: 'POST',
-      path: '/users/login',
+      url: '/users/login',
       handler: this.loginUserController.execute.bind(this.loginUserController),
       schema: {
         body: {

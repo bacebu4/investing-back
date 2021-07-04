@@ -15,27 +15,27 @@ export abstract class BaseControllerImpl implements BaseController {
       const { status, data } = await this.executeImpl(req);
       this[status](res, data);
     } catch (error) {
-      this.fail(res, error);
+      this.fail(res);
     }
   }
 
-  protected formatError(e: any) {
+  protected formatError(e: Error) {
     return { message: e?.message };
   }
 
-  private [ControllerStatus.ok](res: FastifyReply, data: any = {}) {
+  private [ControllerStatus.ok](res: FastifyReply, data: unknown = {}) {
     return res.code(200).send(data);
   }
 
-  private [ControllerStatus.created](res: FastifyReply, data: any = {}) {
+  private [ControllerStatus.created](res: FastifyReply, data: unknown = {}) {
     return res.code(201).send(data);
   }
 
-  private [ControllerStatus.clientError](res: FastifyReply, errors: any) {
+  private [ControllerStatus.clientError](res: FastifyReply, errors: unknown) {
     return res.code(400).send(errors);
   }
 
-  private [ControllerStatus.fail](res: FastifyReply, error: any) {
+  private [ControllerStatus.fail](res: FastifyReply) {
     return res.code(500).send({
       message: 'An unexpected error occurred',
     });

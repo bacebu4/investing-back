@@ -9,7 +9,7 @@ export class LabeledLogger implements Logger {
     this.logger.info(this.decorateMessageWithName(message));
   }
 
-  public error(obj: object, msg?: string) {
+  public error(obj: Record<string, unknown>, msg?: string) {
     this.logger.error(obj, this.decorateMessageWithName(msg));
   }
 
@@ -23,7 +23,7 @@ export class LabeledLogger implements Logger {
     return this.logger.child(bindings);
   }
 
-  public decorateRequestWithTraceId(req: IncomingMessage, cb: Function) {
+  public decorateRequestWithTraceId(req: IncomingMessage, cb: () => void) {
     this.logger.decorateRequestWithTraceId(req, cb);
   }
 }

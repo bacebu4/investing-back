@@ -20,10 +20,10 @@ export class TickerEntity {
   @Column()
   percentageAimingTo: number;
 
-  @ManyToOne((type) => UserEntity, (user) => user.tickers)
+  @ManyToOne(() => UserEntity, (user) => user.tickers)
   userId: UserEntity;
 
-  @OneToOne((type) => SymbolEntity)
+  @OneToOne(() => SymbolEntity)
   @JoinColumn()
   symbol: SymbolEntity;
 }
