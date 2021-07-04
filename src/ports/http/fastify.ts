@@ -1,5 +1,6 @@
 import fastify, { FastifyInstance } from 'fastify';
-import { Routes } from '../../ports/http/Routes';
+import { BaseController } from './BaseController';
+import { Routes, RoutesImpl } from './Routes';
 
 export interface Server {
   server: FastifyInstance;
@@ -9,7 +10,11 @@ export interface Server {
 export class ServerImpl implements Server {
   server: FastifyInstance;
 
-  constructor(routes: Routes) {
+  constructor(
+    private createUserController: BaseController,
+    private loginUserController: BaseController
+  ) {
+    const routes = new RoutesImpl(createUserController, loginUserController);
     this.server = fastify({ logger: true });
     routes.list.forEach((route) => {
       this.server.route(route as any);

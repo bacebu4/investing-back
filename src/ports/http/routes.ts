@@ -1,12 +1,12 @@
-import { Request, Response } from './interfaces';
 import { Currency } from '../../domain/User';
 import { BaseController } from './BaseController';
+import { FastifyReply, FastifyRequest } from 'fastify';
 
 export interface Routes {
   list: Array<{
     method: string;
     path: string;
-    handler: (req: Request, res: Response) => void;
+    handler: (req: FastifyRequest, res: FastifyReply) => void;
   }>;
 }
 

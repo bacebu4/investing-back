@@ -8,7 +8,7 @@ import { LoggerImpl } from './src/infrastructure/logger/Logger';
 import { UserRepositoryImpl } from './src/infrastructure/repositories/UserRepository';
 import { TokenServiceImpl } from './src/infrastructure/token/TokenService';
 import { UUIDImpl } from './src/infrastructure/uuid/UUID';
-import { ServerImpl } from './src/infrastructure/webserver/fastify';
+import { ServerImpl } from './src/ports/http/fastify';
 import { RoutesImpl } from './src/ports/http/Routes';
 import { CreateUserControllerImpl } from './src/usecases/CreateUser/CreateUserController';
 import { CreateUserImpl } from './src/usecases/CreateUser/CreateUserUsecase';
@@ -64,8 +64,7 @@ const loginUserFactory = () =>
 
 const createUserController = new CreateUserControllerImpl(createUserFactory);
 const loginUserController = new LoginUserControllerImpl(loginUserFactory);
-const routes = new RoutesImpl(createUserController, loginUserController);
-const server = new ServerImpl(routes);
+const server = new ServerImpl(createUserController, loginUserController);
 
 async function bootstrap() {
   await db.initialize();

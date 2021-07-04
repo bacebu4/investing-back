@@ -1,14 +1,3 @@
-export interface Request {
-  body: any;
-  params: any;
-  headers: any;
-}
-
-export interface Response {
-  code(codeNumber: number): Response;
-  send(payload: any): void;
-}
-
 export enum ControllerStatus {
   clientError = 'clientError',
   ok = 'ok',
