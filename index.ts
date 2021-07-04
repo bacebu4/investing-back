@@ -9,8 +9,9 @@ import { UserRepositoryImpl } from './src/infrastructure/repositories/UserReposi
 import { TokenServiceImpl } from './src/infrastructure/token/TokenService';
 import { UUIDImpl } from './src/infrastructure/uuid/UUID';
 import { ServerImpl } from './src/ports/http/fastify';
-import { RoutesImpl } from './src/ports/http/Routes';
 import { CreateUserControllerImpl } from './src/usecases/CreateUser/CreateUserController';
+import { CreateUserHTTPRoute } from './src/usecases/CreateUser/CreateUserHTTPRoute';
+import { LoginUserHTTPRoute } from './src/usecases/LoginUser/LoginUserHTTPRoute';
 import { CreateUserImpl } from './src/usecases/CreateUser/CreateUserUsecase';
 import { LoginUserControllerImpl } from './src/usecases/LoginUser/LoginUserController';
 import { LoginUserImpl } from './src/usecases/LoginUser/LoginUserUsecase';
@@ -64,7 +65,10 @@ const loginUserFactory = () =>
 
 const createUserController = new CreateUserControllerImpl(createUserFactory);
 const loginUserController = new LoginUserControllerImpl(loginUserFactory);
-const server = new ServerImpl(createUserController, loginUserController);
+
+const createUserRoute = new CreateUserHTTPRoute(createUserController);
+const loginUserRoute = new LoginUserHTTPRoute(loginUserController);
+const server = new ServerImpl([createUserRoute, loginUserRoute]);
 
 async function bootstrap() {
   await db.initialize();
