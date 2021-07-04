@@ -1,8 +1,5 @@
 import { BaseControllerImpl } from '../../ports/http/BaseController';
-import {
-  ControllerResponse,
-  ControllerStatus,
-} from '../../ports/http/interfaces';
+import { ControllerStatus } from '../../ports/http/interfaces';
 import { LoginUserDTO } from './LoginUserDTO';
 import { LoginUser } from './LoginUserUsecase';
 
@@ -13,11 +10,7 @@ export class LoginUserControllerImpl extends BaseControllerImpl {
     super();
   }
 
-  protected async executeImpl({
-    body: dto,
-  }: {
-    body: LoginUserDTO;
-  }): Promise<ControllerResponse> {
+  protected async executeImpl({ body: dto }: { body: LoginUserDTO }) {
     this.useCase = this.loginUserFactory();
 
     const [errors, token] = await this.useCase.invoke(dto);
