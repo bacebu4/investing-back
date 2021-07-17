@@ -1,20 +1,22 @@
-export class Ticker {
+import { Ticker, TickerSymbol } from './interfaces';
+
+export class TickerWithPrice implements Ticker {
   price: number;
   amount: number;
-  name: string;
+  symbol: TickerSymbol;
   id: string;
   percentageAimingTo: number;
 
   constructor({
     price,
     amount,
-    name,
+    symbol,
     id,
     percentageAimingTo,
-  }: Omit<Ticker, 'totalPrice'>) {
+  }: Omit<TickerWithPrice, 'totalPrice'>) {
     this.price = price;
     this.amount = amount;
-    this.name = name;
+    this.symbol = symbol;
     this.id = id;
     this.percentageAimingTo = percentageAimingTo;
   }

@@ -1,4 +1,4 @@
-import { UserRepository } from '../../infrastructure/repositories/UserRepository';
+import { UserRepository } from '../../infrastructure/repositories/user/UserRepository';
 import { Usecase } from '../interface';
 import { Crypto } from '../../infrastructure/crypto/Crypto';
 import { Token, TokenService } from '../../infrastructure/token/TokenService';

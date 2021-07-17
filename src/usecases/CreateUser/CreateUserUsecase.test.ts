@@ -17,7 +17,6 @@ describe('CreateUser', () => {
 
   beforeAll(() => {
     const s = setup();
-
     setupData = s;
   });
 

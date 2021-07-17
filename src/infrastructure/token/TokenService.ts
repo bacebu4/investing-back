@@ -1,5 +1,4 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { User } from '../../domain/User';
 
 export class Token {
   public value: string;
@@ -11,7 +10,7 @@ export class Token {
 
 export interface TokenService {
   signWithUserId(userId: string): Token;
-  verifyAndGetUserId(token: Token): Pick<User, 'id'>;
+  verifyAndGetUserId(token: Token): string;
 }
 
 export class TokenServiceImpl implements TokenService {

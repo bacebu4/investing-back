@@ -1,4 +1,4 @@
-import { UserRepository } from '../../infrastructure/repositories/UserRepository';
+import { UserRepository } from '../../infrastructure/repositories/user/UserRepository';
 import { Usecase } from '../interface';
 import { UUID } from '../../infrastructure/uuid/UUID';
 import { Currency, User } from '../../domain/User';

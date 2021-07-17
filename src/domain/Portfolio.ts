@@ -1,10 +1,10 @@
 import { ErrorCode, BaseError } from './Error';
-import { Ticker } from './Ticker';
+import { TickerWithPrice } from './TickerWithPrice';
 
 export class Portfolio implements Portfolio {
-  public tickers: Ticker[];
+  public tickers: TickerWithPrice[];
 
-  constructor(tickers: Ticker[]) {
+  constructor(tickers: TickerWithPrice[]) {
     this.tickers = tickers;
   }
 

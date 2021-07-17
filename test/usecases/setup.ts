@@ -1,7 +1,7 @@
 import { User } from '../../src/domain/User';
 import { Crypto } from '../../src/infrastructure/crypto/Crypto';
 import { Logger } from '../../src/infrastructure/logger/Logger';
-import { UserRepository } from '../../src/infrastructure/repositories/UserRepository';
+import { UserRepository } from '../../src/infrastructure/repositories/user/UserRepository';
 import {
   Token,
   TokenService,
@@ -46,13 +46,25 @@ const mockGetByEmail = jest.fn();
 const mockGetByEmailLeft = jest.fn();
 const mockGetByEmailRight = jest.fn();
 class UserRepoFake implements UserRepository {
-  save(user: User) {
+  save(user: User): any {
     mockSave(user);
   }
 
   getByEmail(email: string): any {
     mockGetByEmail(email);
     return [mockGetByEmailLeft(), mockGetByEmailRight()];
+  }
+
+  getTickerIdBySymbolName(): any {
+    return [null, '123'];
+  }
+
+  saveTicker() {
+    return true as any;
+  }
+
+  getById() {
+    return true as any;
   }
 }
 

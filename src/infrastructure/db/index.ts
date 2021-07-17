@@ -6,13 +6,27 @@ import { SymbolEntity } from './entities/SymbolEntity';
 import { DatabaseError, DatabaseErrorCode } from './DatabaseError';
 import { Either, left, right } from '../../lib/Either';
 import { Logger } from '../logger/Logger';
+import { Ticker } from '../../domain/interfaces';
 
 export interface Database {
   initialize(): void;
   saveUser(user: User): void;
+  findSymbol(symbol: string): Promise<Either<DatabaseError, SymbolEntity>>;
+  createSymbol(
+    input: Record<'symbol' | 'name', string>
+  ): Promise<Either<DatabaseError, boolean>>;
+  saveTicker(
+    ticker: Ticker,
+    userId: string
+  ): Promise<Either<DatabaseError, boolean>>;
   getByEmail(email: string): Promise<Either<DatabaseError, UserEntity>>;
+  getUserById(id: string): Promise<Either<DatabaseError, UserEntity>>;
+  getTickerIdByUserIdAndSymbol(
+    input: Record<'userId' | 'symbol', string>
+  ): Promise<Either<DatabaseError, string>>;
 }
 
+// TODO private constructor + factory method
 export class DatabaseImpl implements Database {
   private connection: Connection;
 
@@ -52,10 +66,130 @@ export class DatabaseImpl implements Database {
     await userRepo.save(userToSave);
   }
 
+  public async findSymbol(symbol: string) {
+    try {
+      const [symbolEntity] = await this.establishedConnection.manager.query(
+        /* sql */
+        `
+        SELECT
+          *
+        FROM
+          symbol_entity
+        WHERE
+          symbol = $1
+      `,
+        [symbol]
+      );
+
+      if (!symbolEntity) {
+        return left(new DatabaseError(DatabaseErrorCode.NOT_FOUND));
+      }
+
+      const res = new SymbolEntity();
+      res.name = symbolEntity.name;
+      res.symbol = symbolEntity.symbol;
+
+      return right(res);
+    } catch (error) {
+      return left(new DatabaseError(DatabaseErrorCode.UNEXPECTED_DB_ERROR));
+    }
+  }
+
+  public async createSymbol({
+    symbol,
+    name,
+  }: Record<'symbol' | 'name', string>) {
+    try {
+      await this.establishedConnection.manager.query(
+        /* sql */
+        `
+        INSERT INTO symbol_entity (symbol, "name")
+          VALUES($1, $2)
+      `,
+        [symbol, name]
+      );
+
+      return right(true);
+    } catch (error) {
+      return left(new DatabaseError(DatabaseErrorCode.UNEXPECTED_DB_ERROR));
+    }
+  }
+
+  public async getTickerIdByUserIdAndSymbol({
+    userId,
+    symbol,
+  }: Record<'userId' | 'symbol', string>) {
+    try {
+      const [tickerWithId] = await this.establishedConnection.manager.query(
+        /* sql */
+        `
+        SELECT
+          id
+        FROM
+          ticker_entity
+        WHERE
+          "userIdId" = $1
+          AND "symbolSymbol" = $2
+        `,
+        [userId, symbol]
+      );
+
+      const id = tickerWithId?.id;
+
+      if (id) {
+        return right(id);
+      }
+
+      return left(new DatabaseError(DatabaseErrorCode.NOT_FOUND));
+    } catch (error) {
+      return left(new DatabaseError(DatabaseErrorCode.UNEXPECTED_DB_ERROR));
+    }
+  }
+
+  public async saveTicker(ticker: Ticker, userId: string) {
+    try {
+      await this.establishedConnection.manager.query(
+        /* sql */
+        `
+        INSERT INTO ticker_entity(id, amount, "percentageAimingTo", "userIdId", "symbolSymbol")
+          VALUES($1, $2, $3, $4, $5)
+        `,
+        [
+          ticker.id,
+          ticker.amount,
+          ticker.percentageAimingTo,
+          userId,
+          ticker.symbol.value,
+        ]
+      );
+
+      return right(true);
+    } catch (error) {
+      console.log(error);
+
+      return left(new DatabaseError(DatabaseErrorCode.UNEXPECTED_DB_ERROR));
+    }
+  }
+
   public async getByEmail(email: string) {
     try {
       const userRepo = this.establishedConnection.getRepository(UserEntity);
       const user = await userRepo.findOne({ email });
+
+      if (!user) {
+        return left(new DatabaseError(DatabaseErrorCode.NOT_FOUND));
+      }
+
+      return right(user);
+    } catch (error) {
+      return left(new DatabaseError(DatabaseErrorCode.UNEXPECTED_DB_ERROR));
+    }
+  }
+
+  public async getUserById(id: string) {
+    try {
+      const userRepo = this.establishedConnection.getRepository(UserEntity);
+      const user = await userRepo.findOne({ id });
 
       if (!user) {
         return left(new DatabaseError(DatabaseErrorCode.NOT_FOUND));

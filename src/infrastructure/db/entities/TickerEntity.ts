@@ -17,7 +17,7 @@ export class TickerEntity {
   @Column()
   amount: number;
 
-  @Column()
+  @Column({ type: 'float4' })
   percentageAimingTo: number;
 
   @ManyToOne(() => UserEntity, (user) => user.tickers)

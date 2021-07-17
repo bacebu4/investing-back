@@ -1,5 +1,5 @@
 import { Portfolio } from './Portfolio';
-import { Ticker } from './Ticker';
+import { TickerWithPrice } from './TickerWithPrice';
 
 export class PortfolioOptimizer {
   portfolio: Portfolio;
@@ -12,7 +12,7 @@ export class PortfolioOptimizer {
     this.totalPriceWithAmountToInvest = portfolio.totalPrice + amountToInvest;
 
     const tickersWithApproximateAmount = portfolio.tickers.map((ticker) => {
-      const updatedTicker = new Ticker({
+      const updatedTicker = new TickerWithPrice({
         ...ticker,
         amount: Math.floor(
           (this.totalPriceWithAmountToInvest * ticker.percentageAimingTo -
