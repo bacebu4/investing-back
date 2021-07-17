@@ -9,7 +9,6 @@ import { Logger } from '../logger/Logger';
 import { Ticker } from '../../domain/interfaces';
 
 export interface Database {
-  initialize(): void;
   saveUser(user: User): void;
   saveTicker(
     ticker: Ticker,
@@ -26,37 +25,11 @@ export interface Database {
   ) => Promise<Either<DatabaseError, any>>;
 }
 
-// TODO private constructor + factory method
 export class DatabaseImpl implements Database {
-  private connection: Connection;
+  private constructor(private logger: Logger, private connection: Connection) {}
 
-  constructor(private logger: Logger) {}
-
-  public async query(query: string, parameters?: unknown[]) {
-    try {
-      const res = await this.establishedConnection.manager.query(
-        query,
-        parameters
-      );
-      return right(res);
-    } catch (error) {
-      if (error instanceof Error) {
-        this.logger.error(error);
-      }
-      return left(new DatabaseError(DatabaseErrorCode.UNEXPECTED_DB_ERROR));
-    }
-  }
-
-  get establishedConnection() {
-    if (this.connection) {
-      return this.connection;
-    } else {
-      throw new DatabaseError(DatabaseErrorCode.NOT_ESTABLISHED_DB_CONNECTION);
-    }
-  }
-
-  public async initialize() {
-    this.connection = await createConnection({
+  static async create(logger: Logger) {
+    const connection = await createConnection({
       type: 'postgres',
       host: 'localhost',
       port: 5432,
@@ -68,11 +41,25 @@ export class DatabaseImpl implements Database {
       logging: false,
     });
 
-    this.logger.info('Connection established');
+    logger.info('Connection established');
+
+    return new DatabaseImpl(logger, connection);
+  }
+
+  public async query(query: string, parameters?: unknown[]) {
+    try {
+      const res = await this.connection.manager.query(query, parameters);
+      return right(res);
+    } catch (error) {
+      if (error instanceof Error) {
+        this.logger.error(error);
+      }
+      return left(new DatabaseError(DatabaseErrorCode.UNEXPECTED_DB_ERROR));
+    }
   }
 
   public async saveUser(user: User) {
-    const userRepo = this.establishedConnection.getRepository(UserEntity);
+    const userRepo = this.connection.getRepository(UserEntity);
     const userToSave = new UserEntity();
     userToSave.email = user.email;
     userToSave.hashedPassword = user.hashedPassword;
@@ -86,7 +73,7 @@ export class DatabaseImpl implements Database {
     symbol,
   }: Record<'userId' | 'symbol', string>) {
     try {
-      const [tickerWithId] = await this.establishedConnection.manager.query(
+      const [tickerWithId] = await this.connection.manager.query(
         /* sql */
         `
         SELECT
@@ -114,7 +101,7 @@ export class DatabaseImpl implements Database {
 
   public async saveTicker(ticker: Ticker, userId: string) {
     try {
-      await this.establishedConnection.manager.query(
+      await this.connection.manager.query(
         /* sql */
         `
         INSERT INTO ticker_entity(id, amount, "percentageAimingTo", "userIdId", "symbolSymbol")
@@ -139,7 +126,7 @@ export class DatabaseImpl implements Database {
 
   public async getByEmail(email: string) {
     try {
-      const userRepo = this.establishedConnection.getRepository(UserEntity);
+      const userRepo = this.connection.getRepository(UserEntity);
       const user = await userRepo.findOne({ email });
 
       if (!user) {
@@ -154,7 +141,7 @@ export class DatabaseImpl implements Database {
 
   public async getUserById(id: string) {
     try {
-      const userRepo = this.establishedConnection.getRepository(UserEntity);
+      const userRepo = this.connection.getRepository(UserEntity);
       const user = await userRepo.findOne({ id });
 
       if (!user) {

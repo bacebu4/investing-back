@@ -21,72 +21,71 @@ import { LoginUserImpl } from './src/usecases/LoginUser/LoginUserUsecase';
 import { AddNewTickerImpl } from './src/usecases/AddNewTicker/AddNewTickerUsecase';
 import { SymbolRepositoryImpl } from './src/infrastructure/repositories/symbol/SymbolRepository';
 
-const ticker1 = new TickerWithPrice({
-  price: 10,
-  amount: 2,
-  symbol: {
-    value: 'CHMF',
-    name: 'Sever',
-  },
-  id: '1',
-  percentageAimingTo: 0.2,
-});
-
-const ticker2 = new TickerWithPrice({
-  price: 10,
-  amount: 2,
-  symbol: {
-    value: 'CHMF',
-    name: 'Sever',
-  },
-  id: '2',
-  percentageAimingTo: 0.3,
-});
-
-const ticker3 = new TickerWithPrice({
-  price: 10,
-  amount: 2,
-  symbol: {
-    value: 'CHMF',
-    name: 'Sever',
-  },
-  id: '3',
-  percentageAimingTo: 0.5,
-});
-
-const portfolio = new Portfolio([ticker1, ticker2, ticker3]);
-const portfolioShouldBe = new PortfolioOptimizer(portfolio, 1000);
-portfolioShouldBe.optimize();
-console.log(portfolio.totalPrice);
-console.log(portfolioShouldBe.portfolio.totalPrice);
-
-const logger = new LoggerImpl();
-
-const dbLogger = new LabeledLogger(logger, 'db');
-const db = new DatabaseImpl(dbLogger);
-
-const userRepo = new UserRepositoryImpl(logger, db);
-const symbolRepo = new SymbolRepositoryImpl(logger, db);
-const uuid = new UUIDImpl();
-const crypto = new CryptoImpl();
-const tokenService = new TokenServiceImpl();
-
-const createUserFactory = () =>
-  new CreateUserImpl(userRepo, uuid, crypto, tokenService);
-
-const loginUserUsecaseLogger = new LabeledLogger(logger, 'LoginUser Usecase');
-const loginUserFactory = () =>
-  new LoginUserImpl(userRepo, crypto, tokenService, loginUserUsecaseLogger);
-
-const createUserController = new CreateUserControllerImpl(createUserFactory);
-const loginUserController = new LoginUserControllerImpl(loginUserFactory);
-
-const createUserRoute = new CreateUserHTTPRoute(createUserController);
-const loginUserRoute = new LoginUserHTTPRoute(loginUserController);
-const server = new ServerImpl([createUserRoute, loginUserRoute]);
-
 async function bootstrap() {
-  await db.initialize();
+  const ticker1 = new TickerWithPrice({
+    price: 10,
+    amount: 2,
+    symbol: {
+      value: 'CHMF',
+      name: 'Sever',
+    },
+    id: '1',
+    percentageAimingTo: 0.2,
+  });
+
+  const ticker2 = new TickerWithPrice({
+    price: 10,
+    amount: 2,
+    symbol: {
+      value: 'CHMF',
+      name: 'Sever',
+    },
+    id: '2',
+    percentageAimingTo: 0.3,
+  });
+
+  const ticker3 = new TickerWithPrice({
+    price: 10,
+    amount: 2,
+    symbol: {
+      value: 'CHMF',
+      name: 'Sever',
+    },
+    id: '3',
+    percentageAimingTo: 0.5,
+  });
+
+  const portfolio = new Portfolio([ticker1, ticker2, ticker3]);
+  const portfolioShouldBe = new PortfolioOptimizer(portfolio, 1000);
+  portfolioShouldBe.optimize();
+  console.log(portfolio.totalPrice);
+  console.log(portfolioShouldBe.portfolio.totalPrice);
+
+  const logger = new LoggerImpl();
+
+  const dbLogger = new LabeledLogger(logger, 'db');
+  const db = await DatabaseImpl.create(dbLogger);
+
+  const userRepo = new UserRepositoryImpl(logger, db);
+  const symbolRepo = new SymbolRepositoryImpl(logger, db);
+  const uuid = new UUIDImpl();
+  const crypto = new CryptoImpl();
+  const tokenService = new TokenServiceImpl();
+
+  const createUserFactory = () =>
+    new CreateUserImpl(userRepo, uuid, crypto, tokenService);
+
+  const loginUserUsecaseLogger = new LabeledLogger(logger, 'LoginUser Usecase');
+  const loginUserFactory = () =>
+    new LoginUserImpl(userRepo, crypto, tokenService, loginUserUsecaseLogger);
+
+  const createUserController = new CreateUserControllerImpl(createUserFactory);
+  const loginUserController = new LoginUserControllerImpl(loginUserFactory);
+
+  const createUserRoute = new CreateUserHTTPRoute(createUserController);
+  const loginUserRoute = new LoginUserHTTPRoute(loginUserController);
+  const server = new ServerImpl([createUserRoute, loginUserRoute]);
+
   const a = new AddNewTickerImpl(uuid, tokenService, userRepo, symbolRepo);
   const res = await a.invoke(
     { symbol: 'SOME2', initialAmount: 1, percentageAimingTo: 0.3 },
