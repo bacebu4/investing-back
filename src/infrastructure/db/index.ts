@@ -22,7 +22,7 @@ export interface Database {
   ): Promise<Either<DatabaseError, string>>;
   query: (
     query: string,
-    parameters?: any[]
+    parameters?: unknown[]
   ) => Promise<Either<DatabaseError, any>>;
 }
 
@@ -32,7 +32,7 @@ export class DatabaseImpl implements Database {
 
   constructor(private logger: Logger) {}
 
-  public async query(query: string, parameters?: any[]) {
+  public async query(query: string, parameters?: unknown[]) {
     try {
       const res = await this.establishedConnection.manager.query(
         query,
