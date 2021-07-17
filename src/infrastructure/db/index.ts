@@ -11,10 +11,6 @@ import { Ticker } from '../../domain/interfaces';
 export interface Database {
   initialize(): void;
   saveUser(user: User): void;
-  findSymbol(symbol: string): Promise<Either<DatabaseError, SymbolEntity>>;
-  createSymbol(
-    input: Record<'symbol' | 'name', string>
-  ): Promise<Either<DatabaseError, boolean>>;
   saveTicker(
     ticker: Ticker,
     userId: string
@@ -24,6 +20,10 @@ export interface Database {
   getTickerIdByUserIdAndSymbol(
     input: Record<'userId' | 'symbol', string>
   ): Promise<Either<DatabaseError, string>>;
+  query: (
+    query: string,
+    parameters?: any[]
+  ) => Promise<Either<DatabaseError, any>>;
 }
 
 // TODO private constructor + factory method
@@ -31,6 +31,21 @@ export class DatabaseImpl implements Database {
   private connection: Connection;
 
   constructor(private logger: Logger) {}
+
+  public async query(query: string, parameters?: any[]) {
+    try {
+      const res = await this.establishedConnection.manager.query(
+        query,
+        parameters
+      );
+      return right(res);
+    } catch (error) {
+      if (error instanceof Error) {
+        this.logger.error(error);
+      }
+      return left(new DatabaseError(DatabaseErrorCode.UNEXPECTED_DB_ERROR));
+    }
+  }
 
   get establishedConnection() {
     if (this.connection) {
@@ -64,55 +79,6 @@ export class DatabaseImpl implements Database {
     userToSave.id = user.id;
     userToSave.currency = user.currency;
     await userRepo.save(userToSave);
-  }
-
-  public async findSymbol(symbol: string) {
-    try {
-      const [symbolEntity] = await this.establishedConnection.manager.query(
-        /* sql */
-        `
-        SELECT
-          *
-        FROM
-          symbol_entity
-        WHERE
-          symbol = $1
-      `,
-        [symbol]
-      );
-
-      if (!symbolEntity) {
-        return left(new DatabaseError(DatabaseErrorCode.NOT_FOUND));
-      }
-
-      const res = new SymbolEntity();
-      res.name = symbolEntity.name;
-      res.symbol = symbolEntity.symbol;
-
-      return right(res);
-    } catch (error) {
-      return left(new DatabaseError(DatabaseErrorCode.UNEXPECTED_DB_ERROR));
-    }
-  }
-
-  public async createSymbol({
-    symbol,
-    name,
-  }: Record<'symbol' | 'name', string>) {
-    try {
-      await this.establishedConnection.manager.query(
-        /* sql */
-        `
-        INSERT INTO symbol_entity (symbol, "name")
-          VALUES($1, $2)
-      `,
-        [symbol, name]
-      );
-
-      return right(true);
-    } catch (error) {
-      return left(new DatabaseError(DatabaseErrorCode.UNEXPECTED_DB_ERROR));
-    }
   }
 
   public async getTickerIdByUserIdAndSymbol({

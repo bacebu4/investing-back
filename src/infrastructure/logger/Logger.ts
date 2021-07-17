@@ -5,7 +5,8 @@ import { IncomingMessage } from 'http';
 export interface Logger {
   info(message: string): void;
   child(bindings: pino.Bindings): pino.Logger;
-  error(obj: Record<string, unknown>, msg?: string): void;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  error(obj: object, msg?: string): void;
   decorateRequestWithTraceId(req: IncomingMessage, cb: () => void): void;
 }
 
