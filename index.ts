@@ -89,7 +89,7 @@ async function bootstrap() {
 
   const a = new AddNewTickerImpl(uuid, tokenService, userRepo, symbolRepo);
   const res = await a.invoke(
-    { symbol: 'SOME2', initialAmount: 1, percentageAimingTo: 0.3 },
+    { symbol: 'SOME3', initialAmount: 1, percentageAimingTo: 0.3 },
     new Token(
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjODYxMWU1ZC0yZDNmLTRlZTItODE0Yi0yODUwZWUyNDczMGYiLCJpYXQiOjE2MjU5NDM4NTh9.Ch4YfHyznmSAPLAxf0muYM3UjfeVNfSBNM4u4dihT78'
     )

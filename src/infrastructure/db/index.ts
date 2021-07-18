@@ -5,13 +5,8 @@ import { SymbolEntity } from './entities/SymbolEntity';
 import { DatabaseError, DatabaseErrorCode } from './DatabaseError';
 import { Either, left, right } from '../../lib/Either';
 import { Logger } from '../logger/Logger';
-import { Ticker } from '../../domain/interfaces';
 
 export interface Database {
-  saveTicker(
-    ticker: Ticker,
-    userId: string
-  ): Promise<Either<DatabaseError, boolean>>;
   getTickerIdByUserIdAndSymbol(
     input: Record<'userId' | 'symbol', string>
   ): Promise<Either<DatabaseError, string>>;
@@ -81,31 +76,6 @@ export class DatabaseImpl implements Database {
 
       return left(new DatabaseError(DatabaseErrorCode.NOT_FOUND));
     } catch (error) {
-      return left(new DatabaseError(DatabaseErrorCode.UNEXPECTED_DB_ERROR));
-    }
-  }
-
-  public async saveTicker(ticker: Ticker, userId: string) {
-    try {
-      await this.connection.manager.query(
-        /* sql */
-        `
-        INSERT INTO ticker_entity(id, amount, "percentageAimingTo", "userIdId", "symbolSymbol")
-          VALUES($1, $2, $3, $4, $5)
-        `,
-        [
-          ticker.id,
-          ticker.amount,
-          ticker.percentageAimingTo,
-          userId,
-          ticker.symbol.value,
-        ]
-      );
-
-      return right(true);
-    } catch (error) {
-      console.log(error);
-
       return left(new DatabaseError(DatabaseErrorCode.UNEXPECTED_DB_ERROR));
     }
   }

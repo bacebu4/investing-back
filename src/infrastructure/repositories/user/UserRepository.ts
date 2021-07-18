@@ -101,13 +101,28 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   public async saveTicker(ticker: Ticker, userId: string) {
-    const [error] = await this.db.saveTicker(ticker, userId);
+    const [, success] = await this.db.query(
+      /* sql */
+      `
+      INSERT INTO ticker_entity(id, amount, "percentageAimingTo", "userIdId", "symbolSymbol")
+        VALUES($1, $2, $3, $4, $5)
+      `,
+      [
+        ticker.id,
+        ticker.amount,
+        ticker.percentageAimingTo,
+        userId,
+        ticker.symbol.value,
+      ]
+    );
 
-    if (error) {
-      throw new Error();
+    if (success) {
+      return right(true);
     }
 
-    return right(true);
+    return left(
+      new UserRepositoryError(UserRepositoryErrorCode.UNEXPECTED_ERROR)
+    );
   }
 
   public async getTickerIdBySymbolName({
