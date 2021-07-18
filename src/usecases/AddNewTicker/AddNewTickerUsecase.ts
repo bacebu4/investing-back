@@ -45,22 +45,6 @@ export class AddNewTickerImpl implements AddNewTicker {
         userId: this.userId,
       });
 
-    if (!foundTickerIdInPortfolio && validSymbol && foundUser) {
-      const [, successfullyAdded] = await this.userRepo.saveTicker(
-        {
-          amount: this.initialAmount,
-          symbol: validSymbol,
-          id: this.uuid.generate(),
-          percentageAimingTo,
-        },
-        foundUser.id
-      );
-
-      if (successfullyAdded) {
-        return right(true);
-      }
-    }
-
     if (foundTickerIdInPortfolio) {
       this.errors.push(
         new AddNewTickerError(AddNewTickerErrorCode.ALREADY_EXISTS)
@@ -75,6 +59,22 @@ export class AddNewTickerImpl implements AddNewTicker {
       this.errors.push(
         new AddNewTickerError(AddNewTickerErrorCode.USER_NOT_EXISTS)
       );
+    }
+
+    if (!this.errors.length) {
+      const [, successfullyAdded] = await this.userRepo.saveTicker(
+        {
+          amount: this.initialAmount,
+          symbol: validSymbol,
+          id: this.uuid.generate(),
+          percentageAimingTo,
+        },
+        foundUser.id
+      );
+
+      if (successfullyAdded) {
+        return right(true);
+      }
     }
 
     return left(this.errors);
