@@ -1,18 +1,9 @@
-import { Portfolio } from './Portfolio/Portfolio';
-import { TickerWithPrice } from './TickerWithPrice';
-
-export enum PortfolioOptimizerErrorCode {
-  CORRUPTED_DATA = 'The data was corrupted during the portfolio optimization',
-}
-
-export class PortfolioOptimizerError extends Error {
-  message: PortfolioOptimizerErrorCode;
-
-  constructor(message: PortfolioOptimizerErrorCode) {
-    super(message);
-    this.message = message;
-  }
-}
+import { Portfolio } from '../Portfolio/Portfolio';
+import { TickerWithPrice } from '../TickerWithPrice';
+import {
+  PortfolioOptimizerError,
+  PortfolioOptimizerErrorCode,
+} from './PortfolioOptimizerError';
 
 // TODO should not throw + private constructor + create separate directory
 export class PortfolioOptimizer {
