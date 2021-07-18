@@ -54,14 +54,21 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async getById(id: string) {
-    const [error, user] = await this.db.getUserById(id);
+    const [, [user]] = await this.db.query(
+      /* sql */
+      `
+        SELECT
+          *
+        FROM
+          user_entity
+        WHERE
+          id = $1
+      `,
+      [id]
+    );
 
-    if (error) {
-      if (error?.message === DatabaseErrorCode.NOT_FOUND) {
-        return left(new UserRepositoryError(UserRepositoryErrorCode.NOT_FOUND));
-      }
-
-      throw new Error();
+    if (!user) {
+      return left(new UserRepositoryError(UserRepositoryErrorCode.NOT_FOUND));
     }
 
     const userToReturn = new User({
