@@ -5,7 +5,7 @@ import {
   PortfolioOptimizerErrorCode,
 } from './PortfolioOptimizerError';
 
-// TODO should not throw + private constructor + create separate directory
+// TODO should not throw + private constructor
 export class PortfolioOptimizer {
   portfolio: Portfolio;
   amountToInvest: number;
