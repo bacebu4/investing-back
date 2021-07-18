@@ -6,10 +6,7 @@ import { DatabaseImpl } from './src/infrastructure/db';
 import { LabeledLogger } from './src/infrastructure/logger/LabaledLogger';
 import { LoggerImpl } from './src/infrastructure/logger/Logger';
 import { UserRepositoryImpl } from './src/infrastructure/repositories/user/UserRepository';
-import {
-  Token,
-  TokenServiceImpl,
-} from './src/infrastructure/token/TokenService';
+import { TokenServiceImpl } from './src/infrastructure/token/TokenService';
 import { UUIDImpl } from './src/infrastructure/uuid/UUID';
 import { ServerImpl } from './src/ports/http/fastify';
 import { CreateUserControllerImpl } from './src/usecases/CreateUser/CreateUserController';
@@ -99,9 +96,7 @@ async function bootstrap() {
   const a = new AddNewTickerImpl(uuid, tokenService, userRepo, symbolRepo);
   const res = await a.invoke(
     { symbol: 'SOME3', initialAmount: 1, percentageAimingTo: 0.3 },
-    new Token(
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjODYxMWU1ZC0yZDNmLTRlZTItODE0Yi0yODUwZWUyNDczMGYiLCJpYXQiOjE2MjU5NDM4NTh9.Ch4YfHyznmSAPLAxf0muYM3UjfeVNfSBNM4u4dihT78'
-    )
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjODYxMWU1ZC0yZDNmLTRlZTItODE0Yi0yODUwZWUyNDczMGYiLCJpYXQiOjE2MjU5NDM4NTh9.Ch4YfHyznmSAPLAxf0muYM3UjfeVNfSBNM4u4dihT78'
   );
   console.log(res);
 

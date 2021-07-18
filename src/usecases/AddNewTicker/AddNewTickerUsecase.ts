@@ -1,6 +1,6 @@
 import { SymbolRepository } from '../../infrastructure/repositories/symbol/SymbolRepository';
 import { UserRepository } from '../../infrastructure/repositories/user/UserRepository';
-import { Token, TokenService } from '../../infrastructure/token/TokenService';
+import { TokenService } from '../../infrastructure/token/TokenService';
 import { UUID } from '../../infrastructure/uuid/UUID';
 import { Either, left, right } from '../../lib/Either';
 import { Usecase } from '../interface';
@@ -10,7 +10,7 @@ import { AddNewTickerError, AddNewTickerErrorCode } from './AddNewTickerError';
 export interface AddNewTicker extends Usecase {
   invoke(
     payload: AddNewTickerDTO,
-    token: Token
+    tokenValue: string
   ): Promise<Either<AddNewTickerError[], boolean>>;
 }
 
@@ -30,11 +30,11 @@ export class AddNewTickerImpl implements AddNewTicker {
 
   public async invoke(
     { symbol, initialAmount, percentageAimingTo }: AddNewTickerDTO,
-    token: Token
+    tokenValue: string
   ) {
     this.symbol = symbol;
     this.initialAmount = initialAmount;
-    this.userId = this.tokenService.verifyAndGetUserId(token);
+    this.userId = this.tokenService.verifyAndGetUserId(tokenValue);
 
     const [, validSymbol] = await this.symbolRepo.findOrCreate(this.symbol);
 
