@@ -1,4 +1,4 @@
-import { Portfolio } from './src/domain/Portfolio';
+import { Portfolio } from './src/domain/Portfolio/Portfolio';
 import { PortfolioOptimizer } from './src/domain/PortfolioOptimizer';
 import { TickerWithPrice } from './src/domain/TickerWithPrice';
 import { CryptoImpl } from './src/infrastructure/crypto/Crypto';

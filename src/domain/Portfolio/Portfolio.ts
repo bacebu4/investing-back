@@ -1,21 +1,9 @@
-import { Either, left, right } from '../lib/Either';
-import { ErrorCode, BaseError } from './Error';
-import { TickerWithPrice } from './TickerWithPrice';
-
-export enum PortfolioErrorCode {
-  WRONG_PERCENTAGES = 'The sum of all end percentages should equal to 1',
-}
+import { Either, left, right } from '../../lib/Either';
+import { ErrorCode, BaseError } from '../Error';
+import { TickerWithPrice } from '../TickerWithPrice';
+import { PortfolioError, PortfolioErrorCode } from './PortfolioError';
 
 // TODO create separate directory + tickers don't exist without portfolio + portfolio with prices should exist as well
-export class PortfolioError extends Error {
-  message: PortfolioErrorCode;
-
-  constructor(message: PortfolioErrorCode) {
-    super(message);
-    this.message = message;
-  }
-}
-
 export class Portfolio implements Portfolio {
   public tickers: TickerWithPrice[];
 

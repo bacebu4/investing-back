@@ -1,4 +1,4 @@
-import { Portfolio } from './Portfolio';
+import { Portfolio } from './Portfolio/Portfolio';
 import { TickerWithPrice } from './TickerWithPrice';
 
 export enum PortfolioOptimizerErrorCode {
