@@ -3,10 +3,11 @@ import { Usecase } from '../interface';
 import { UUID } from '../../infrastructure/uuid/UUID';
 import { Currency, User } from '../../domain/User';
 import { Crypto } from '../../infrastructure/crypto/Crypto';
-import { Token, TokenService } from '../../infrastructure/token/TokenService';
+import { TokenService } from '../../infrastructure/token/TokenService';
 import { CreateUserDTO } from './CreateUserDTO';
 import { Either, left, right } from '../../lib/Either';
 import { CreateUserError, CreateUserErrorCode } from './CreateUserErrors';
+import { Token } from '../../domain/Token';
 
 export interface CreateUser extends Usecase {
   invoke(payload: CreateUserDTO): Promise<Either<CreateUserError[], Token>>;

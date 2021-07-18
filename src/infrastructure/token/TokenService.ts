@@ -1,8 +1,5 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
-
-export interface Token {
-  value: string;
-}
+import { Token } from '../../domain/Token';
 
 export interface TokenService {
   signWithUserId(userId: string): Token;

@@ -1,12 +1,13 @@
 import { UserRepository } from '../../infrastructure/repositories/user/UserRepository';
 import { Usecase } from '../interface';
 import { Crypto } from '../../infrastructure/crypto/Crypto';
-import { Token, TokenService } from '../../infrastructure/token/TokenService';
+import { TokenService } from '../../infrastructure/token/TokenService';
 import { Either, left, right } from '../../lib/Either';
 import { LoginUserDTO } from './LoginUserDTO';
 import { User } from '../../domain/User';
 import { Logger } from '../../infrastructure/logger/Logger';
 import { LoginUserError, LoginUserErrorCode } from './LoginUserErrors';
+import { Token } from '../../domain/Token';
 
 export interface LoginUser extends Usecase {
   invoke(payload: LoginUserDTO): Promise<Either<LoginUserError[], Token>>;
