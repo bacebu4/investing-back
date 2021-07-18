@@ -3,7 +3,7 @@ import { ErrorCode, BaseError } from '../Error';
 import { TickerWithPrice } from '../TickerWithPrice';
 import { PortfolioError, PortfolioErrorCode } from './PortfolioError';
 
-// TODO create separate directory + tickers don't exist without portfolio + portfolio with prices should exist as well
+// TODO  tickers don't exist without portfolio + portfolio with prices should exist as well
 export class Portfolio implements Portfolio {
   public tickers: TickerWithPrice[];
 
@@ -24,11 +24,12 @@ export class Portfolio implements Portfolio {
     return right(new Portfolio(tickers));
   }
 
-  get totalPrice() {
+  public get totalPrice() {
     return this.tickers.reduce((acc, val) => acc + val.totalPrice, 0);
   }
 
-  findTickerById(id: string) {
+  // TODO should return either
+  private findTickerById(id: string) {
     const tickerIndex = this.tickers.findIndex(
       ({ id: tickerId }) => tickerId === id
     );
@@ -40,13 +41,13 @@ export class Portfolio implements Portfolio {
     return this.tickers[tickerIndex];
   }
 
-  percentageOfTickerById(id: string) {
+  private percentageOfTickerById(id: string) {
     const ticker = this.findTickerById(id);
 
     return ticker.totalPrice / this.totalPrice;
   }
 
-  relativePercentageOfTickerById(id: string) {
+  public relativePercentageOfTickerById(id: string) {
     const ticker = this.findTickerById(id);
 
     return (
@@ -55,17 +56,17 @@ export class Portfolio implements Portfolio {
     );
   }
 
-  addOneTickerById(id: string) {
+  public addOneTickerById(id: string) {
     const ticker = this.findTickerById(id);
     ticker.amount += 1;
   }
 
-  removeTickerAmountById(id: string) {
+  public removeTickerAmountById(id: string) {
     const ticker = this.findTickerById(id);
     ticker.amount -= 1;
   }
 
-  get tickersWithAnalytics() {
+  public get tickersWithAnalytics() {
     return this.tickers.map((ticker) => {
       const percentage = ticker.totalPrice / this.totalPrice;
       const relativePercentage =
