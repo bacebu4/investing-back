@@ -38,7 +38,7 @@ export class SymbolRepositoryImpl implements SymbolRepository {
   }
 
   private async find(symbol: string) {
-    const [, foundSymbolEntity] = await this.db.query(
+    const [, [foundSymbolEntity]] = await this.db.query(
       /* sql */
       `
         SELECT
