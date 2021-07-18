@@ -14,7 +14,6 @@ export interface Database {
     ticker: Ticker,
     userId: string
   ): Promise<Either<DatabaseError, boolean>>;
-  getByEmail(email: string): Promise<Either<DatabaseError, UserEntity>>;
   getUserById(id: string): Promise<Either<DatabaseError, UserEntity>>;
   getTickerIdByUserIdAndSymbol(
     input: Record<'userId' | 'symbol', string>
@@ -120,21 +119,6 @@ export class DatabaseImpl implements Database {
     } catch (error) {
       console.log(error);
 
-      return left(new DatabaseError(DatabaseErrorCode.UNEXPECTED_DB_ERROR));
-    }
-  }
-
-  public async getByEmail(email: string) {
-    try {
-      const userRepo = this.connection.getRepository(UserEntity);
-      const user = await userRepo.findOne({ email });
-
-      if (!user) {
-        return left(new DatabaseError(DatabaseErrorCode.NOT_FOUND));
-      }
-
-      return right(user);
-    } catch (error) {
       return left(new DatabaseError(DatabaseErrorCode.UNEXPECTED_DB_ERROR));
     }
   }

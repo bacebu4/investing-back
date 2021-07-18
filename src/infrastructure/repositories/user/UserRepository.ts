@@ -26,14 +26,21 @@ export class UserRepositoryImpl implements UserRepository {
   constructor(private logger: Logger, private db: Database) {}
 
   async getByEmail(email: string) {
-    const [error, user] = await this.db.getByEmail(email);
+    const [, [user]] = await this.db.query(
+      /* sql */
+      `
+        SELECT
+          *
+        FROM
+          user_entity
+        WHERE
+          email = $1
+      `,
+      [email]
+    );
 
-    if (error) {
-      if (error?.message === DatabaseErrorCode.NOT_FOUND) {
-        return left(new UserRepositoryError(UserRepositoryErrorCode.NOT_FOUND));
-      }
-
-      throw new Error();
+    if (!user) {
+      return left(new UserRepositoryError(UserRepositoryErrorCode.NOT_FOUND));
     }
 
     const userToReturn = new User({
