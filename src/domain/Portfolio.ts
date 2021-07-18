@@ -1,11 +1,39 @@
+import { Either, left, right } from '../lib/Either';
 import { ErrorCode, BaseError } from './Error';
 import { TickerWithPrice } from './TickerWithPrice';
+
+export enum PortfolioErrorCode {
+  WRONG_PERCENTAGES = 'The sum of all end percentages should equal to 1',
+}
+
+// TODO create separate directory
+export class PortfolioError extends Error {
+  message: PortfolioErrorCode;
+
+  constructor(message: PortfolioErrorCode) {
+    super(message);
+    this.message = message;
+  }
+}
 
 export class Portfolio implements Portfolio {
   public tickers: TickerWithPrice[];
 
-  constructor(tickers: TickerWithPrice[]) {
+  private constructor(tickers: TickerWithPrice[]) {
     this.tickers = tickers;
+  }
+
+  static from(tickers: TickerWithPrice[]): Either<PortfolioError, Portfolio> {
+    const sumOfAllPercentagesAimingTo = tickers.reduce(
+      (acc, val) => acc + val.percentageAimingTo,
+      0
+    );
+
+    if (parseFloat(sumOfAllPercentagesAimingTo.toFixed(2)) !== 1) {
+      return left(new PortfolioError(PortfolioErrorCode.WRONG_PERCENTAGES));
+    }
+
+    return right(new Portfolio(tickers));
   }
 
   get totalPrice() {

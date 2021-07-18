@@ -1,6 +1,20 @@
 import { Portfolio } from './Portfolio';
 import { TickerWithPrice } from './TickerWithPrice';
 
+export enum PortfolioOptimizerErrorCode {
+  CORRUPTED_DATA = 'The data was corrupted during the portfolio optimization',
+}
+
+export class PortfolioOptimizerError extends Error {
+  message: PortfolioOptimizerErrorCode;
+
+  constructor(message: PortfolioOptimizerErrorCode) {
+    super(message);
+    this.message = message;
+  }
+}
+
+// TODO should not throw + private constructor + create separate directory
 export class PortfolioOptimizer {
   portfolio: Portfolio;
   amountToInvest: number;
@@ -24,7 +38,17 @@ export class PortfolioOptimizer {
       return updatedTicker;
     });
 
-    this.portfolio = new Portfolio([...tickersWithApproximateAmount]);
+    const [, portfolioUpdated] = Portfolio.from([
+      ...tickersWithApproximateAmount,
+    ]);
+
+    if (!portfolioUpdated) {
+      throw new PortfolioOptimizerError(
+        PortfolioOptimizerErrorCode.CORRUPTED_DATA
+      );
+    }
+
+    this.portfolio = portfolioUpdated;
   }
 
   optimize() {

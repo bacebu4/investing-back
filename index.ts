@@ -56,7 +56,16 @@ async function bootstrap() {
     percentageAimingTo: 0.5,
   });
 
-  const portfolio = new Portfolio([ticker1, ticker2, ticker3]);
+  const [portfolioError, portfolio] = Portfolio.from([
+    ticker1,
+    ticker2,
+    ticker3,
+  ]);
+
+  if (portfolioError) {
+    throw new Error('error creating portfolio');
+  }
+
   const portfolioShouldBe = new PortfolioOptimizer(portfolio, 1000);
   portfolioShouldBe.optimize();
   console.log(portfolio.totalPrice);
@@ -98,4 +107,8 @@ async function bootstrap() {
 
   server.start();
 }
-bootstrap();
+try {
+  bootstrap();
+} catch (error) {
+  console.log(error);
+}
