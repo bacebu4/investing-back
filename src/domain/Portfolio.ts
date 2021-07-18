@@ -6,7 +6,7 @@ export enum PortfolioErrorCode {
   WRONG_PERCENTAGES = 'The sum of all end percentages should equal to 1',
 }
 
-// TODO create separate directory
+// TODO create separate directory + tickers don't exist without portfolio + portfolio with prices should exist as well
 export class PortfolioError extends Error {
   message: PortfolioErrorCode;
 
