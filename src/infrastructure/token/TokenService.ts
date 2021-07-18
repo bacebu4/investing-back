@@ -13,6 +13,7 @@ export interface TokenService {
   verifyAndGetUserId(token: Token): string;
 }
 
+// TODO throws error when wrong token. Fix it with try/catch
 export class TokenServiceImpl implements TokenService {
   private secret = '123';
 

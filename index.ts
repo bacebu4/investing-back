@@ -21,6 +21,7 @@ import { LoginUserImpl } from './src/usecases/LoginUser/LoginUserUsecase';
 import { AddNewTickerImpl } from './src/usecases/AddNewTicker/AddNewTickerUsecase';
 import { SymbolRepositoryImpl } from './src/infrastructure/repositories/symbol/SymbolRepository';
 
+// TODO server factory
 async function bootstrap() {
   const ticker1 = new TickerWithPrice({
     price: 10,
