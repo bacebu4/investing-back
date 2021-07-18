@@ -7,9 +7,6 @@ import { Either, left, right } from '../../lib/Either';
 import { Logger } from '../logger/Logger';
 
 export interface Database {
-  getTickerIdByUserIdAndSymbol(
-    input: Record<'userId' | 'symbol', string>
-  ): Promise<Either<DatabaseError, string>>;
   query: (
     query: string,
     parameters?: unknown[]
@@ -45,37 +42,6 @@ export class DatabaseImpl implements Database {
       if (error instanceof Error) {
         this.logger.error(error);
       }
-      return left(new DatabaseError(DatabaseErrorCode.UNEXPECTED_DB_ERROR));
-    }
-  }
-
-  public async getTickerIdByUserIdAndSymbol({
-    userId,
-    symbol,
-  }: Record<'userId' | 'symbol', string>) {
-    try {
-      const [tickerWithId] = await this.connection.manager.query(
-        /* sql */
-        `
-        SELECT
-          id
-        FROM
-          ticker_entity
-        WHERE
-          "userIdId" = $1
-          AND "symbolSymbol" = $2
-        `,
-        [userId, symbol]
-      );
-
-      const id = tickerWithId?.id;
-
-      if (id) {
-        return right(id);
-      }
-
-      return left(new DatabaseError(DatabaseErrorCode.NOT_FOUND));
-    } catch (error) {
       return left(new DatabaseError(DatabaseErrorCode.UNEXPECTED_DB_ERROR));
     }
   }

@@ -2,7 +2,6 @@ import { Ticker } from '../../../domain/interfaces';
 import { User } from '../../../domain/User';
 import { Either, left, right } from '../../../lib/Either';
 import { Database } from '../../db';
-import { DatabaseErrorCode } from '../../db/DatabaseError';
 import { Logger } from '../../logger/Logger';
 import {
   UserRepositoryError,
@@ -129,19 +128,25 @@ export class UserRepositoryImpl implements UserRepository {
     userId,
     symbol,
   }: Record<'userId' | 'symbol', string>) {
-    const [err, id] = await this.db.getTickerIdByUserIdAndSymbol({
-      userId,
-      symbol,
-    });
+    const [, [tickerWithId]] = await this.db.query(
+      /* sql */
+      `
+      SELECT
+        id
+      FROM
+        ticker_entity
+      WHERE
+        "userIdId" = $1
+        AND "symbolSymbol" = $2
+      `,
+      [userId, symbol]
+    );
 
-    if (err) {
-      if (err?.message === DatabaseErrorCode.NOT_FOUND) {
-        return left(new UserRepositoryError(UserRepositoryErrorCode.NOT_FOUND));
-      }
-
-      throw new Error();
+    const id = tickerWithId?.id;
+    if (id) {
+      return right(id);
     }
 
-    return right(id);
+    return left(new UserRepositoryError(UserRepositoryErrorCode.NOT_FOUND));
   }
 }
