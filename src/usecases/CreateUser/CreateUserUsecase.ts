@@ -37,6 +37,7 @@ export class CreateUserImpl implements CreateUser {
     }
 
     const user = await this.formNewUser();
+
     await this.userRepository.save(user);
 
     const token = this.tokenService.signWithUserId(user.id);
@@ -71,11 +72,18 @@ export class CreateUserImpl implements CreateUser {
   private async formNewUser() {
     const userId = this.uuid.generate();
     const hashedPassword = await this.crypto.generateHash(this.password);
-    return new User({
+
+    const [, user] = User.from({
       id: userId,
       email: this.email,
       currency: this.currency,
       hashedPassword,
     });
+
+    if (!user) {
+      throw new CreateUserError(CreateUserErrorCode.CORRUPTED_DATA);
+    }
+
+    return user;
   }
 }

@@ -7,7 +7,7 @@ import { CreateUserImpl } from './CreateUserUsecase';
 const VALID_INPUT = {
   email: 'FAKE_MAIL',
   password: '12356',
-  currency: Currency.Rub,
+  currency: Currency.RUB,
 };
 const INVALID_PASSWORD = '123';
 

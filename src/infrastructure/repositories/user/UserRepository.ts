@@ -42,12 +42,16 @@ export class UserRepositoryImpl implements UserRepository {
       return left(new UserRepositoryError(UserRepositoryErrorCode.NOT_FOUND));
     }
 
-    const userToReturn = new User({
+    const [, userToReturn] = User.from({
       id: user.id,
       email: user.email,
       currency: user.currency,
       hashedPassword: user.hashedPassword,
     });
+
+    if (!userToReturn) {
+      throw new UserRepositoryError(UserRepositoryErrorCode.CORRUPTED_DATA);
+    }
 
     return right(userToReturn);
   }
@@ -70,12 +74,16 @@ export class UserRepositoryImpl implements UserRepository {
       return left(new UserRepositoryError(UserRepositoryErrorCode.NOT_FOUND));
     }
 
-    const userToReturn = new User({
+    const [, userToReturn] = User.from({
       id: user.id,
       email: user.email,
       currency: user.currency,
       hashedPassword: user.hashedPassword,
     });
+
+    if (!userToReturn) {
+      throw new UserRepositoryError(UserRepositoryErrorCode.CORRUPTED_DATA);
+    }
 
     return right(userToReturn);
   }
