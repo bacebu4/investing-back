@@ -10,7 +10,7 @@ import {
 } from './UserRepositoryError';
 
 export interface UserRepository {
-  save(user: User): Promise<void>;
+  save(user: User): Promise<Either<UserRepositoryError, boolean>>;
   getByEmail(email: string): Promise<Either<UserRepositoryError, User>>;
   getById(id: string): Promise<Either<UserRepositoryError, User>>;
   getTickerIdBySymbolName(
@@ -75,7 +75,22 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   public async save(user: User) {
-    await this.db.saveUser(user);
+    const [, success] = await this.db.query(
+      /* sql */
+      `
+        INSERT INTO user_entity (id, email, "hashedPassword", currency)
+          VALUES($1, $2, $3, $4)
+      `,
+      [user.id, user.email, user.hashedPassword, user.currency]
+    );
+
+    if (success) {
+      return right(true);
+    }
+
+    return left(
+      new UserRepositoryError(UserRepositoryErrorCode.UNEXPECTED_ERROR)
+    );
   }
 
   public async saveTicker(ticker: Ticker, userId: string) {
