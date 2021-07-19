@@ -1,5 +1,6 @@
 import { Either, left, right } from '../../lib/Either';
 import { isString } from '../../lib/guards/isString';
+import { UserError, UserErrorCode } from './UserError';
 
 export enum Currency {
   RUB = 'RUB',
@@ -24,27 +25,27 @@ export class User {
     email: unknown;
     currency: unknown;
     hashedPassword: unknown;
-  }): Either<string[], User> {
-    const errors: Array<string> = [];
+  }): Either<UserError[], User> {
+    const errors: Array<UserError> = [];
 
     if (!isString(obj.id)) {
-      errors.push('`id` field should be string');
+      errors.push(new UserError(UserErrorCode.WRONG_ID_FIELD));
     }
 
     if (!isString(obj.email)) {
-      errors.push('`email` field should be string');
+      errors.push(new UserError(UserErrorCode.WRONG_EMAIL_FIELD));
     }
 
     if (!isString(obj.currency)) {
-      errors.push('`currency` field should be string');
+      errors.push(new UserError(UserErrorCode.WRONG_CURRENCY_FIELD));
     }
 
     if (isString(obj.currency) && !(obj.currency in Currency)) {
-      errors.push('`currency` field should be a valid currency');
+      errors.push(new UserError(UserErrorCode.NOT_SUPPORTED_CURRENCY_FIELD));
     }
 
     if (!isString(obj.hashedPassword)) {
-      errors.push('`hashedPassword` field should be string');
+      errors.push(new UserError(UserErrorCode.WRONG_PASSWORD_FIELD));
     }
 
     if (!errors.length) {
