@@ -1,3 +1,4 @@
+import { Either, left, right } from '../../lib/Either';
 import { Portfolio } from '../Portfolio/Portfolio';
 import { TickerWithPrice } from '../TickerWithPrice';
 import {
@@ -5,22 +6,51 @@ import {
   PortfolioOptimizerErrorCode,
 } from './PortfolioOptimizerError';
 
-// TODO should not throw + private constructor
 export class PortfolioOptimizer {
   portfolio: Portfolio;
-  amountToInvest: number;
   totalPriceWithAmountToInvest: number;
 
-  constructor(portfolio: Portfolio, amountToInvest: number) {
-    this.amountToInvest = amountToInvest;
+  private constructor(
+    portfolio: Portfolio,
+    totalPriceWithAmountToInvest: number
+  ) {
+    this.portfolio = portfolio;
+    this.totalPriceWithAmountToInvest = totalPriceWithAmountToInvest;
+  }
 
-    this.totalPriceWithAmountToInvest = portfolio.totalPrice + amountToInvest;
+  static from(
+    portfolio: Portfolio,
+    amountToInvest: number
+  ): Either<PortfolioOptimizerError, PortfolioOptimizer> {
+    const totalPriceWithAmountToInvest = portfolio.totalPrice + amountToInvest;
 
+    const [error, portfolioWithApproximateOptimization] =
+      PortfolioOptimizer.approximateOptimization(
+        portfolio,
+        totalPriceWithAmountToInvest
+      );
+
+    if (error) {
+      return left(error);
+    }
+
+    return right(
+      new PortfolioOptimizer(
+        portfolioWithApproximateOptimization,
+        totalPriceWithAmountToInvest
+      )
+    );
+  }
+
+  static approximateOptimization(
+    portfolio: Portfolio,
+    totalPriceWithAmountToInvest: number
+  ): Either<PortfolioOptimizerError, Portfolio> {
     const tickersWithApproximateAmount = portfolio.tickers.map((ticker) => {
       const updatedTicker = new TickerWithPrice({
         ...ticker,
         amount: Math.floor(
-          (this.totalPriceWithAmountToInvest * ticker.percentageAimingTo -
+          (totalPriceWithAmountToInvest * ticker.percentageAimingTo -
             ticker.totalPrice) /
             ticker.price
         ),
@@ -29,17 +59,17 @@ export class PortfolioOptimizer {
       return updatedTicker;
     });
 
-    const [, portfolioUpdated] = Portfolio.from([
+    const [, updatedPortfolio] = Portfolio.from([
       ...tickersWithApproximateAmount,
     ]);
 
-    if (!portfolioUpdated) {
-      throw new PortfolioOptimizerError(
-        PortfolioOptimizerErrorCode.CORRUPTED_DATA
+    if (!updatedPortfolio) {
+      return left(
+        new PortfolioOptimizerError(PortfolioOptimizerErrorCode.CORRUPTED_DATA)
       );
     }
 
-    this.portfolio = portfolioUpdated;
+    return right(updatedPortfolio);
   }
 
   optimize() {

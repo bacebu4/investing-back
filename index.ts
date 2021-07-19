@@ -63,7 +63,12 @@ async function bootstrap() {
     throw new Error('error creating portfolio');
   }
 
-  const portfolioShouldBe = new PortfolioOptimizer(portfolio, 1000);
+  const [, portfolioShouldBe] = PortfolioOptimizer.from(portfolio, 1000);
+
+  if (!portfolioShouldBe) {
+    throw new Error('not able to create portfolio optimizer');
+  }
+
   portfolioShouldBe.optimize();
   console.log(portfolio.totalPrice);
   console.log(portfolioShouldBe.portfolio.totalPrice);
