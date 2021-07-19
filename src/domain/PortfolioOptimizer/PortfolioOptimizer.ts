@@ -44,16 +44,19 @@ export class PortfolioOptimizer {
 
   optimize() {
     this.portfolio.tickers.forEach((ticker) => {
-      const initialRelativeAbsPercentage = Math.abs(
-        this.portfolio.relativePercentageOfTickerById(ticker.id)
-      );
+      const [, relativePercentageOfTicker] =
+        this.portfolio.relativePercentageOfTickerById(ticker.id);
+
+      const initialRelativeAbsPercentage = Math.abs(relativePercentageOfTicker);
       let nextRelativeAbsPercentage: number;
 
       do {
         this.portfolio.addOneTickerById(ticker.id);
-        nextRelativeAbsPercentage = Math.abs(
-          this.portfolio.relativePercentageOfTickerById(ticker.id)
-        );
+
+        const [, nextRelativePercentage] =
+          this.portfolio.relativePercentageOfTickerById(ticker.id);
+
+        nextRelativeAbsPercentage = Math.abs(nextRelativePercentage);
       } while (
         nextRelativeAbsPercentage < initialRelativeAbsPercentage &&
         this.portfolio.totalPrice < this.totalPriceWithAmountToInvest

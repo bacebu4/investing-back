@@ -1,5 +1,4 @@
 import { Either, left, right } from '../../lib/Either';
-import { ErrorCode, BaseError } from '../Error';
 import { TickerWithPrice } from '../TickerWithPrice';
 import { PortfolioError, PortfolioErrorCode } from './PortfolioError';
 
@@ -28,42 +27,62 @@ export class Portfolio implements Portfolio {
     return this.tickers.reduce((acc, val) => acc + val.totalPrice, 0);
   }
 
-  // TODO should return either
-  private findTickerById(id: string) {
+  private findTickerById(id: string): Either<PortfolioError, TickerWithPrice> {
     const tickerIndex = this.tickers.findIndex(
       ({ id: tickerId }) => tickerId === id
     );
 
     if (tickerIndex === -1) {
-      throw new BaseError(ErrorCode.CORRUPTED);
+      return left(new PortfolioError(PortfolioErrorCode.NOT_EXISTING_ID));
     }
 
-    return this.tickers[tickerIndex];
+    return right(this.tickers[tickerIndex]);
   }
 
   private percentageOfTickerById(id: string) {
-    const ticker = this.findTickerById(id);
+    const [error, ticker] = this.findTickerById(id);
 
-    return ticker.totalPrice / this.totalPrice;
+    if (ticker) {
+      return right(ticker.totalPrice / this.totalPrice);
+    }
+
+    return left(error);
   }
 
   public relativePercentageOfTickerById(id: string) {
-    const ticker = this.findTickerById(id);
+    const [error, ticker] = this.findTickerById(id);
+    const [, percentageOfTickerById] = this.percentageOfTickerById(id);
 
-    return (
-      (ticker.percentageAimingTo - this.percentageOfTickerById(id)) /
-      ticker.percentageAimingTo
-    );
+    if (ticker && percentageOfTickerById) {
+      return right(
+        (ticker.percentageAimingTo - percentageOfTickerById) /
+          ticker.percentageAimingTo
+      );
+    }
+
+    return left(error);
   }
 
   public addOneTickerById(id: string) {
-    const ticker = this.findTickerById(id);
-    ticker.amount += 1;
+    const [error, ticker] = this.findTickerById(id);
+
+    if (ticker) {
+      ticker.amount += 1;
+      return right(true);
+    }
+
+    return left(error);
   }
 
   public removeTickerAmountById(id: string) {
-    const ticker = this.findTickerById(id);
-    ticker.amount -= 1;
+    const [error, ticker] = this.findTickerById(id);
+
+    if (ticker) {
+      ticker.amount -= 1;
+      return right(true);
+    }
+
+    return left(error);
   }
 
   public get tickersWithAnalytics() {
