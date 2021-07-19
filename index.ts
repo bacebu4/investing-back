@@ -1,4 +1,4 @@
-import { Portfolio } from './src/domain/Portfolio/Portfolio';
+import { PortfolioWithPrices } from './src/domain/PortfolioWithPrices/PortfolioWithPrices';
 import { PortfolioOptimizer } from './src/domain/PortfolioOptimizer/PortfolioOptimizer';
 import { TickerWithPrice } from './src/domain/TickerWithPrice';
 import { CryptoImpl } from './src/infrastructure/crypto/Crypto';
@@ -53,7 +53,7 @@ async function bootstrap() {
     percentageAimingTo: 0.5,
   });
 
-  const [portfolioError, portfolio] = Portfolio.from([
+  const [portfolioError, portfolio] = PortfolioWithPrices.from([
     ticker1,
     ticker2,
     ticker3,

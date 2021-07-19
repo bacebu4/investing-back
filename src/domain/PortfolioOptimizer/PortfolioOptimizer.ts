@@ -1,5 +1,5 @@
 import { Either, left, right } from '../../lib/Either';
-import { Portfolio } from '../Portfolio/Portfolio';
+import { PortfolioWithPrices } from '../PortfolioWithPrices/PortfolioWithPrices';
 import { TickerWithPrice } from '../TickerWithPrice';
 import {
   PortfolioOptimizerError,
@@ -7,11 +7,11 @@ import {
 } from './PortfolioOptimizerError';
 
 export class PortfolioOptimizer {
-  portfolio: Portfolio;
+  portfolio: PortfolioWithPrices;
   totalPriceWithAmountToInvest: number;
 
   private constructor(
-    portfolio: Portfolio,
+    portfolio: PortfolioWithPrices,
     totalPriceWithAmountToInvest: number
   ) {
     this.portfolio = portfolio;
@@ -19,7 +19,7 @@ export class PortfolioOptimizer {
   }
 
   static from(
-    portfolio: Portfolio,
+    portfolio: PortfolioWithPrices,
     amountToInvest: number
   ): Either<PortfolioOptimizerError, PortfolioOptimizer> {
     const totalPriceWithAmountToInvest = portfolio.totalPrice + amountToInvest;
@@ -43,9 +43,9 @@ export class PortfolioOptimizer {
   }
 
   static approximateOptimization(
-    portfolio: Portfolio,
+    portfolio: PortfolioWithPrices,
     totalPriceWithAmountToInvest: number
-  ): Either<PortfolioOptimizerError, Portfolio> {
+  ): Either<PortfolioOptimizerError, PortfolioWithPrices> {
     const tickersWithApproximateAmount = portfolio.tickers.map((ticker) => {
       const updatedTicker = new TickerWithPrice({
         ...ticker,
@@ -59,7 +59,7 @@ export class PortfolioOptimizer {
       return updatedTicker;
     });
 
-    const [, updatedPortfolio] = Portfolio.from([
+    const [, updatedPortfolio] = PortfolioWithPrices.from([
       ...tickersWithApproximateAmount,
     ]);
 
