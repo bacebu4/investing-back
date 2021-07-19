@@ -3,7 +3,7 @@ import { TickerWithPrice } from '../TickerWithPrice';
 import { PortfolioError, PortfolioErrorCode } from './PortfolioError';
 
 // TODO  tickers don't exist without portfolio + portfolio with prices should exist as well
-export class Portfolio implements Portfolio {
+export class Portfolio {
   public tickers: TickerWithPrice[];
 
   private constructor(tickers: TickerWithPrice[]) {
