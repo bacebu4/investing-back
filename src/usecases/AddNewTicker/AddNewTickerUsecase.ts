@@ -14,7 +14,7 @@ export interface AddNewTicker extends Usecase {
   ): Promise<Either<AddNewTickerError[], boolean>>;
 }
 
-// TODO the max percentage aiming to is 1. move to domain
+// TODO the max percentage aiming to is 1. Use `Portfolio` from domain
 export class AddNewTickerImpl implements AddNewTicker {
   private symbol: string;
   private initialAmount: number;
