@@ -4,7 +4,7 @@ import { Crypto } from '../../infrastructure/crypto/Crypto';
 import { TokenService } from '../../infrastructure/token/TokenService';
 import { Either, left, right } from '../../lib/Either';
 import { LoginUserDTO } from './LoginUserDTO';
-import { User } from '../../domain/User';
+import { User } from '../../domain/User/User';
 import { Logger } from '../../infrastructure/logger/Logger';
 import { LoginUserError, LoginUserErrorCode } from './LoginUserErrors';
 import { Token } from '../../domain/Token';

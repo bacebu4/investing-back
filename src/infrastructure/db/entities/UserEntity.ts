@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
-import { Currency } from '../../../domain/User';
+import { Currency } from '../../../domain/User/User';
 import { TickerEntity } from './TickerEntity';
 
 @Entity()

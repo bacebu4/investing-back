@@ -1,6 +1,6 @@
 import { fake } from '../../../test/usecases/fake';
 import { setup, SetupUsecaseData } from '../../../test/usecases/setup';
-import { Currency } from '../../domain/User';
+import { Currency } from '../../domain/User/User';
 import { CreateUserError } from './CreateUserErrors';
 import { CreateUserImpl } from './CreateUserUsecase';
 

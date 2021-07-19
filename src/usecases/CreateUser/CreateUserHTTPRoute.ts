@@ -1,4 +1,4 @@
-import { Currency } from '../../domain/User';
+import { Currency } from '../../domain/User/User';
 import { BaseController } from '../../ports/http/BaseController';
 import { HTTPRoute, Route } from '../../ports/http/interfaces';
 

@@ -1,5 +1,5 @@
-import { Either, left, right } from '../lib/Either';
-import { isString } from '../lib/guards/isString';
+import { Either, left, right } from '../../lib/Either';
+import { isString } from '../../lib/guards/isString';
 
 export enum Currency {
   RUB = 'RUB',

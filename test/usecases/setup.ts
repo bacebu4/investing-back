@@ -1,4 +1,4 @@
-import { User } from '../../src/domain/User';
+import { User } from '../../src/domain/User/User';
 import { Crypto } from '../../src/infrastructure/crypto/Crypto';
 import { Logger } from '../../src/infrastructure/logger/Logger';
 import { UserRepository } from '../../src/infrastructure/repositories/user/UserRepository';

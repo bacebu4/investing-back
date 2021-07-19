@@ -1,4 +1,4 @@
-import { Currency } from '../../domain/User';
+import { Currency } from '../../domain/User/User';
 
 export interface CreateUserDTO {
   email: string;

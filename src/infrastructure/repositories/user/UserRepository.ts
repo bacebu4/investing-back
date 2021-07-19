@@ -1,5 +1,5 @@
 import { Ticker } from '../../../domain/interfaces';
-import { User } from '../../../domain/User';
+import { User } from '../../../domain/User/User';
 import { Either, left, right } from '../../../lib/Either';
 import { Database } from '../../db';
 import { Logger } from '../../logger/Logger';

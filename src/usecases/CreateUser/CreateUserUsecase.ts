@@ -1,7 +1,7 @@
 import { UserRepository } from '../../infrastructure/repositories/user/UserRepository';
 import { Usecase } from '../interface';
 import { UUID } from '../../infrastructure/uuid/UUID';
-import { Currency, User } from '../../domain/User';
+import { Currency, User } from '../../domain/User/User';
 import { Crypto } from '../../infrastructure/crypto/Crypto';
 import { TokenService } from '../../infrastructure/token/TokenService';
 import { CreateUserDTO } from './CreateUserDTO';
