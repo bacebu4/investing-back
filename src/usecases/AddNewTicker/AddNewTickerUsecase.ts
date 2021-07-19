@@ -34,7 +34,17 @@ export class AddNewTickerImpl implements AddNewTicker {
   ) {
     this.symbol = symbol;
     this.initialAmount = initialAmount;
-    this.userId = this.tokenService.verifyAndGetUserId(tokenValue);
+
+    const [, userId] = this.tokenService.verifyAndGetUserId(tokenValue);
+
+    if (!userId) {
+      this.errors.push(
+        new AddNewTickerError(AddNewTickerErrorCode.NOT_AUTHORIZED)
+      );
+      return left(this.errors);
+    }
+
+    this.userId = userId;
 
     const [, validSymbol] = await this.symbolRepo.findOrCreate(this.symbol);
 
